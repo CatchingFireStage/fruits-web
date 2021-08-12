@@ -1,3 +1,10 @@
+/*
+ * @Description:
+ * @Author: LaughingZhu
+ * @Date: 2020-09-07 21:46:05
+ * @LastEditros:
+ * @LastEditTime: 2021-08-12 14:38:43
+ */
 /**
  * Created by PanJiaChen on 16/11/18.
  */
@@ -15,7 +22,7 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function validUsername(str) {
-  const valid_map = ['admin', 'editor']
+  const valid_map = ['fruits']
   return valid_map.indexOf(str.trim()) >= 0
 }
 

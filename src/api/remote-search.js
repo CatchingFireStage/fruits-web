@@ -1,3 +1,10 @@
+/*
+ * @Description:
+ * @Author: LaughingZhu
+ * @Date: 2020-09-07 21:46:05
+ * @LastEditros:
+ * @LastEditTime: 2021-08-12 16:02:01
+ */
 import request from '@/utils/request'
 
 export function searchUser(name) {

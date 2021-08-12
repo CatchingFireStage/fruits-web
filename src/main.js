@@ -1,3 +1,10 @@
+/*
+ * @Description:
+ * @Author: LaughingZhu
+ * @Date: 2020-09-07 21:46:05
+ * @LastEditros:
+ * @LastEditTime: 2021-08-12 17:03:56
+ */
 import Vue from 'vue'
 
 import Cookies from 'js-cookie'
@@ -15,7 +22,6 @@ import router from './router'
 
 import i18n from './lang' // internationalization
 import './icons' // icon
-import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
@@ -44,7 +50,6 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
-
 new Vue({
   el: '#app',
   router,

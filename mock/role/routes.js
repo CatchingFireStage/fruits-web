@@ -69,50 +69,7 @@ const constantRoutes = [
         meta: { title: 'guide', icon: 'guide', noCache: true }
       }
     ]
-  }
-]
-
-const asyncRoutes = [
-  {
-    path: '/permission',
-    component: 'layout/Layout',
-    redirect: '/permission/index',
-    alwaysShow: true,
-    meta: {
-      title: 'permission',
-      icon: 'lock',
-      roles: ['admin', 'editor']
-    },
-    children: [
-      {
-        path: 'page',
-        component: 'views/permission/page',
-        name: 'PagePermission',
-        meta: {
-          title: 'pagePermission',
-          roles: ['admin']
-        }
-      },
-      {
-        path: 'directive',
-        component: 'views/permission/directive',
-        name: 'DirectivePermission',
-        meta: {
-          title: 'directivePermission'
-        }
-      },
-      {
-        path: 'role',
-        component: 'views/permission/role',
-        name: 'RolePermission',
-        meta: {
-          title: 'rolePermission',
-          roles: ['admin']
-        }
-      }
-    ]
   },
-
   {
     path: '/icon',
     component: 'layout/Layout',
@@ -125,6 +82,21 @@ const asyncRoutes = [
       }
     ]
   },
+]
+
+const asyncRoutes = [
+  // {
+  //   path: '/icon',
+  //   component: 'layout/Layout',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: 'views/icons/index',
+  //       name: 'Icons',
+  //       meta: { title: 'icons', icon: 'icon', noCache: true }
+  //     }
+  //   ]
+  // },
 
   {
     path: '/components',

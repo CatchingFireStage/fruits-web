@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2020-09-07 21:46:05
  * @LastEditros:
- * @LastEditTime: 2021-08-12 13:42:45
+ * @LastEditTime: 2021-08-12 14:52:27
  */
 import request from '@/utils/request'
 
@@ -17,7 +17,7 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/vue-element-admin/user/info',
+    url: '/dev-api/vue-element-admin/user/info',
     method: 'get',
     params: { token }
   })
@@ -25,7 +25,7 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: '/vue-element-admin/user/logout',
+    url: '/dev-api/vue-element-admin/user/logout',
     method: 'post'
   })
 }
