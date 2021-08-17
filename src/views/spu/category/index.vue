@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-17 09:50:17
  * @LastEditros:
- * @LastEditTime: 2021-08-17 18:19:40
+ * @LastEditTime: 2021-08-17 18:22:31
 -->
 <template>
   <div class="app-container">
@@ -74,7 +74,7 @@
 <script>
 import { getCategoryList, deleteCategoryById } from '@/api/spu'
 import '@/assets/custom-theme/index.css' // the theme changed version element-ui css
-const lodash = require('lodash')
+const _ = require('lodash')
 export default {
   name: 'SpuCategory',
   data() {
@@ -102,7 +102,7 @@ export default {
     }
   },
   created: function() {
-    this.debouncedGetCategoryDatas = lodash.debounce(this.getCategoryDatas, 500)
+    this.debouncedGetCategoryDatas = _.debounce(this.getCategoryDatas, 500)
 
     setTimeout(() => {
       this.debouncedGetCategoryDatas()
