@@ -62,7 +62,10 @@ export default {
     clipboardDemo: 'Clipboard',
     i18n: '国际化',
     externalLink: '外链',
-    profile: '个人中心'
+    profile: '个人中心',
+    spu: 'SPU管理',
+    spu_category: 'SPU分类',
+    spu_list: 'SPU列表'
   },
   navbar: {
     dashboard: '首页',
@@ -172,4 +175,5 @@ export default {
     fixedHeader: '固定 Header',
     sidebarLogo: '侧边栏 Logo'
   }
+
 }
