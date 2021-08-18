@@ -3,16 +3,16 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-17 09:50:17
  * @LastEditros:
- * @LastEditTime: 2021-08-17 18:22:31
+ * @LastEditTime: 2021-08-18 09:41:05
 -->
 <template>
   <div class="app-container">
     <div class="search">
-      <el-input v-model="keyword" clearable class="keyword" placeholder="请输入查找分类名称" @clear="_getCategoryDatas">
-        <el-button slot="append" icon="el-icon-search" @click="_getCategoryDatas" />
+      <el-input v-model="keyword" clearable class="keyword" placeholder="请输入查找分类名称" @clear="debouncedGetCategoryDatas">
+        <el-button slot="append" icon="el-icon-search" @click="debouncedGetCategoryDatas" />
       </el-input>
 
-      <el-button type="primary" class="add">添加分类</el-button>
+      <el-button type="primary" class="add" @click="addHandle">添加分类</el-button>
     </div>
     <el-table
       :data="tableData"
@@ -53,7 +53,7 @@
               <el-button slot="reference" type="danger" size="small">删除</el-button>
             </el-popconfirm>
 
-            <el-button size="small">编辑</el-button>
+            <el-button size="small" @click="editModal(scope.row)">编辑</el-button>
           </div>
         </template>
       </el-table-column>
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { getCategoryList, deleteCategoryById } from '@/api/spu'
+import { getCategoryList, deleteCategoryById, addCategroy, editCategroy } from '@/api/spu'
 import '@/assets/custom-theme/index.css' // the theme changed version element-ui css
 const _ = require('lodash')
 export default {
@@ -149,10 +149,83 @@ export default {
      */
     async handleDelete(id) {
       const res = await deleteCategoryById(id)
-      if (res.code === 200) {
+      if (res.code === 0) {
         this.$message({
           message: res.msg,
           type: 'success',
+          onClose: () => {
+            // 删除成功后更新list数据
+            this.debouncedGetCategoryDatas()
+          }
+        })
+      }
+    },
+
+    /**
+     * 添加分类-弹窗
+     */
+    addHandle() {
+      this.$prompt('请输入分类名称', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValidator: (e) => {
+          if (e === null || e === '') return false
+          return true
+        },
+        inputErrorMessage: '数据不能为空'
+      }).then(({ value }) => {
+        this.addSubmit({ name: value })
+      })
+    },
+
+    /**
+     * 添加分类
+     * @param {name: String}
+     */
+    async addSubmit(data) {
+      const res = await addCategroy(data)
+      if (res.code === 0) {
+        this.$message({
+          type: 'success',
+          message: res.msg,
+          onClose: () => {
+            // 删除成功后更新list数据
+            this.debouncedGetCategoryDatas()
+          }
+        })
+      }
+    },
+
+    /**
+     * 编辑分类-弹窗
+     * @param data
+     */
+    editModal(data) {
+      this.$prompt('请更新分类名称', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: data.name,
+        inputValidator: (e) => {
+          if (e === null || e === '') return false
+          return true
+        },
+        inputErrorMessage: '数据不能为空'
+      }).then(({ value }) => {
+        this.editSubmit({ name: value }, data.id)
+      })
+    },
+
+    /**
+     * 编辑分类
+     * @param data: {name: String}
+     * @param id: Number
+     */
+    async editSubmit(data, id) {
+      const res = await editCategroy(data, id)
+      if (res.code === 0) {
+        this.$message({
+          type: 'success',
+          message: res.msg,
           onClose: () => {
             // 删除成功后更新list数据
             this.debouncedGetCategoryDatas()
