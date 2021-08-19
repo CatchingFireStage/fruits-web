@@ -73,19 +73,7 @@ export default {
   routes: [
 
     // 登录注册
-    {
-      path: '/spu',
-      name: 'SPU管理',
-      component: '../layouts/BasicLayout',
-      routes: [
-        {
-          name: '分类管理',
-          icon: 'smile',
-          path: '/spu/category',
-          component: './spu/category',
-        },
-      ],
-    },
+    
     {
       path: '/user',
       component: '../layouts/UserLayout',
@@ -112,6 +100,18 @@ export default {
           name: '欢迎页面',
           icon: 'welcome',
           component: './Welcome',
+        },
+        {
+          path: '/spu',
+          name: 'SPU管理',
+          icon: 'welcome',
+          routes: [
+            {
+              name: '分类管理',
+              path: '/spu/category',
+              component: './spu/category',
+            },
+          ],
         },
         {
           component: './404',
