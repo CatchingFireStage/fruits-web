@@ -1,6 +1,5 @@
 import { IConfig, IPlugin } from 'umi-types';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
-
 import slash from 'slash2';
 import themePluginConfig from './themePluginConfig';
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
@@ -97,18 +96,6 @@ export default {
           path: '/user/login',
           component: './User/UserLogin',
         },
-        {
-          name: '注册结果页',
-          icon: 'smile',
-          path: '/user/registerresult',
-          component: './User/UserRegisterResult',
-        },
-        {
-          name: '注册页',
-          icon: 'smile',
-          path: '/user/register',
-          component: './User/UserRegister',
-        },
       ],
     }, //北分资料
 
@@ -123,7 +110,7 @@ export default {
         {
           path: '/welcome',
           name: '欢迎页面',
-          icon: 'smile',
+          icon: 'welcome',
           component: './Welcome',
         },
         {
@@ -182,7 +169,7 @@ export default {
   // chainWebpack: webpackPlugin,
   proxy: {
     '/admin/': {
-      target: '',
+      target: 'http://106.12.76.73:8081/admin',
       changeOrigin: true,
       secure: false,
       pathRewrite: {

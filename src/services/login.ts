@@ -1,19 +1,20 @@
+/*
+ * @Description: 
+ * @Author: LaughingZhu
+ * @Date: 2020-12-22 17:47:17
+ * @LastEditros: 
+ * @LastEditTime: 2021-08-18 18:13:48
+ */
 import request from '@/utils/request';
 
 export interface LoginParamsType {
   userName: string;
   password: string;
-  mobile: string;
-  captcha: string;
 }
 
-export async function fakeAccountLogin(params: LoginParamsType) {
+export async function login(data: LoginParamsType) {
   return request('/api/login/account', {
     method: 'POST',
-    data: params,
+    data
   });
-}
-
-export async function getFakeCaptcha(mobile: string) {
-  return request(`/api/login/captcha?mobile=${mobile}`);
 }

@@ -3,6 +3,7 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
+ import { CheckCircleOutlined } from '@ant-design/icons';
 
 import ProLayout, {
   MenuDataItem,
@@ -65,6 +66,7 @@ const menuDataRender = (menuList: any): any[] =>
     const localItem = {
       ...item,
       icon: item.icon && IconMap[item.icon as string],
+      // icon: item.icon,
       name: item.name,
       path: item.path,
       children: item.children ? menuDataRender(item.children) : [],
@@ -111,7 +113,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
    */
   useEffect(() => {
     const token = localStorage.getItem('fruit_token')
-    console.log(token, 'token')
     if(token === undefined || token === null ||  token === '') {
       message.warning('您还未登录', 2, () => {
         router.replace('/user/login')
@@ -179,3 +180,7 @@ export default connect(({ global, settings }: ConnectState) => ({
   collapsed: global.collapsed,
   settings,
 }))(BasicLayout);
+
+const IconMap = {
+  'welcome': <CheckCircleOutlined />
+}

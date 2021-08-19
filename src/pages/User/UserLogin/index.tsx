@@ -1,20 +1,19 @@
 import { Alert } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
 import React, { Component } from 'react';
+import { message } from 'antd'
 
-import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { Dispatch } from 'redux';
 import { FormComponentProps } from 'antd/es/form';
-import { connect } from 'dva';
-import { StateType } from './model';
+import { router } from 'umi'
 import LoginComponents from './components/Login';
+import { login } from './service'
 import styles from './style.less';
 
 const { Tab, UserName, Password,  Submit } = LoginComponents;
 
 interface UserLoginProps {
   dispatch: Dispatch<any>;
-  userLogin: StateType;
   submitting: boolean;
 }
 interface UserLoginState {
@@ -39,23 +38,17 @@ class UserLogin extends Component<
     autoLogin: true,
   };
 
-  changeAutoLogin = (e: CheckboxChangeEvent) => {
-    this.setState({
-      autoLogin: e.target.checked,
-    });
-  };
 
-  handleSubmit = (err: any, values: FormDataType) => {
+  handleSubmit = async(err: any, values: FormDataType) => {
     // const { type } = this.state;
     if (!err) {
-      const { dispatch } = this.props;
-      dispatch({
-        type: 'userLogin/login',
-        payload: {
-          name: values.username,
-          password: values.password
-        },
-      });
+      const res = await login(values)
+      if(res.code === 0) {
+        localStorage.setItem('fruit_token', res.data)
+        message.success(res.msg, 2, () => {
+          router.replace('/welcome')
+        })
+      }
     }
   };
 
@@ -65,9 +58,8 @@ class UserLogin extends Component<
   );
 
   render() {
-    const { userLogin, submitting } = this.props;
-    const { status, userInfo } = userLogin;
-    const { type, autoLogin } = this.state;
+    const { submitting } = this.props;
+    const { type } = this.state;
     // console.log(userLogin)
     return (
       <div className={styles.main}>
@@ -124,19 +116,4 @@ class UserLogin extends Component<
   }
 }
 
-export default connect(
-  ({
-    userLogin,
-    loading,
-  }: {
-    userLogin: StateType;
-    loading: {
-      effects: {
-        [key: string]: boolean;
-      };
-    };
-  }) => ({
-    userLogin,
-    submitting: loading.effects['userLogin/login'],
-  }),
-)(UserLogin);
+export default UserLogin;
