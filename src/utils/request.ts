@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-06-21 10:15:17
  * @LastEditros: 
- * @LastEditTime: 2021-08-18 18:08:38
+ * @LastEditTime: 2021-08-28 09:00:37
  */
 /**
  * request 网络请求工具
@@ -42,14 +42,9 @@ const request = extend({
 });
 
 request.interceptors.request.use((url, options: any) => {
-  window.localStorage.setItem('loading', 'true');
 
-  const pre = localStorage.getItem('next_admin');
-  const dev =
-    '';
-  const access_token = process.env.NODE_ENV === 'development' ? dev : pre;
   options.headers = {
-    'oauthCode': access_token,
+    'access-token-admin': localStorage.getItem('fruit_token'),
   }
   return (
     {
