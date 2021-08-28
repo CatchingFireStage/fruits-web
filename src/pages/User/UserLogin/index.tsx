@@ -48,6 +48,8 @@ class UserLogin extends Component<
         message.success(res.msg, 2, () => {
           router.replace('/welcome')
         })
+      } else {
+        message.error(res.msg, 2)
       }
     }
   };
