@@ -71,6 +71,26 @@ export default class Merchant extends React.Component<{}, State> {
 
   }
 
+  //是否24小时
+  is24HoursOnChange(checked: boolean, event: Event){
+    //需要更新的值
+    let merchantDetailResponse = new MerchantDetailResponse();
+    merchantDetailResponse.startTime = this.state.merchantDetailResponse?.startTime as Date
+    merchantDetailResponse.endTime = this.state.merchantDetailResponse?.endTime as Date
+    merchantDetailResponse.isClose = this.state.merchantDetailResponse?.isClose as boolean
+    merchantDetailResponse.is24Hours = checked
+
+    let api = updateMerchant(merchantDetailResponse);
+    api.then(response => {
+      if(response.code == 0){
+        return response.data;
+      }
+    }).then(responseJson => {
+      //更新成功
+      this.setState({merchantDetailResponse:merchantDetailResponse})
+    })
+  }
+
 
   render() {
 
@@ -95,7 +115,7 @@ export default class Merchant extends React.Component<{}, State> {
             format={MerchantDetailResponse.format}/>
         </Descriptions.Item>
         <Descriptions.Item label="是否二十四小时营业">
-          <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={this.state.merchantDetailResponse?.is24Hours}/>
+          <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={this.state.merchantDetailResponse?.is24Hours}  onChange={this.is24HoursOnChange.bind(this)}/>
         </Descriptions.Item>
         <Descriptions.Item label="是否休息">
           <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={this.state.merchantDetailResponse?.isClose} onChange={this.isCloseOnChange.bind(this)} />
