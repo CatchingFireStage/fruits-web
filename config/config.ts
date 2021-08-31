@@ -28,7 +28,7 @@ const plugins: IPlugin[] = [
         webpackChunkName: true,
         level: 3,
       },
-      
+
       pwa: pwa
         ? {
             workboxPluginMode: 'InjectManifest',
@@ -73,7 +73,7 @@ export default {
   routes: [
 
     // 登录注册
-    
+
     {
       path: '/user',
       component: '../layouts/UserLayout',
@@ -112,6 +112,12 @@ export default {
               component: './spu/category',
             },
           ],
+        },
+        {
+          path: '/merchant',
+          name: '商家管理',
+          icon: 'welcome',
+          component:"./Merchant"
         },
         {
           component: './404',
