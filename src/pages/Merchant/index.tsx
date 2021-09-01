@@ -68,7 +68,6 @@ export default class Merchant extends React.Component<{}, State> {
     //数据验证
     let startTime = this.state.merchantDetailDTO.startTime.toISOString();
     let endTime = this.state.merchantDetailDTO.endTime.toISOString();
-    console.log(Date.parse(endTime) - Date.parse(startTime) >= 1000 * 60 * 60 * 3)
     if (Date.parse(endTime) - Date.parse(startTime) <= 1000 * 60 * 60 * 3) {
       message.error("营业时间只要3小时")
       return
