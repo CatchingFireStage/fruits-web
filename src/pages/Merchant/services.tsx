@@ -1,5 +1,4 @@
 import request from '@/utils/request';
-import MerchantDetailResponse from "@/pages/Merchant/response/merchantDetailResponse";
 import moment from "moment";
 
 
@@ -11,14 +10,14 @@ export function getMerchant():Promise<any>{
 }
 
 //商家详情更新
-export function updateMerchant(merchantDetailResponse: MerchantDetailResponse):Promise<any>{
+export function updateMerchant(merchantDetailDTO:any):Promise<any>{
   return request('/admin/merchant/merchant', {
     method: 'post',
     data: {
-      startTime: moment(merchantDetailResponse.startTime).format("YYYY-MM-DD HH:mm:ss"),
-      endTime: moment(merchantDetailResponse.endTime).format("YYYY-MM-DD HH:mm:ss"),
-      isClose: merchantDetailResponse.isClose,
-      is24Hours: merchantDetailResponse.is24Hours
+      startTime: moment(merchantDetailDTO.startTime).format("YYYY-MM-DD HH:mm:ss"),
+      endTime: moment(merchantDetailDTO.endTime).format("YYYY-MM-DD HH:mm:ss"),
+      isClose: merchantDetailDTO.isClose,
+      is24Hours: merchantDetailDTO.is24Hours
     }
   })
 }

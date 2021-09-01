@@ -24030,7 +24030,7 @@ function createResponseStatusError(status, url) {
     return new _util.MissingPDFException('Missing PDF "' + url + '".');
   }
 
-  return new _util.UnexpectedResponseException("Unexpected server response (" + status + ') while retrieving PDF "' + url + '".', status);
+  return new _util.UnexpectedResponseException("Unexpected server dto (" + status + ') while retrieving PDF "' + url + '".', status);
 }
 
 function validateResponseStatus(status) {

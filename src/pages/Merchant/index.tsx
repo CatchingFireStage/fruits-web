@@ -1,24 +1,33 @@
 import React from "react";
-import {Descriptions,Switch,Spin,TimePicker} from 'antd';
+import {Descriptions, Switch, Spin, TimePicker, Button,message} from 'antd';
 import {getMerchant, updateMerchant} from "./services"
-import moment from 'moment';
-import MerchantDetailResponse from './response/merchantDetailResponse';
-
-
+import moment, {Moment} from 'moment';
 
 
 interface State {
   //服务端的接口返回数据
-  merchantDetailResponse?:MerchantDetailResponse
+  merchantDetailDTO: {
+    startTime: Date,
+    endTime: Date,
+    is24Hours: boolean,
+    isClose: boolean
+  }
   //是否第一次加载过
-  isInit:boolean
+  isInit: boolean
 }
 
 export default class Merchant extends React.Component<{}, State> {
 
 
-  state: State = {isInit:false}
-
+  state: State = {
+    isInit: false,
+    merchantDetailDTO: {
+      startTime: new Date(),
+      endTime: new Date(),
+      is24Hours: false,
+      isClose: false
+    }
+  }
 
 
   //组件挂在的时候会调用
@@ -26,75 +35,78 @@ export default class Merchant extends React.Component<{}, State> {
 
     //获取商家信息
     let api = getMerchant();
-    api.then(response =>{
+    api.then(response => {
       if (response.code == 0) {
         return response.data;
       }
     }).then((responseJson) => {
 
-      let merchantDetailResponse = new MerchantDetailResponse();
-      merchantDetailResponse.startTime = new Date(responseJson.startTime)
-      merchantDetailResponse.endTime = new Date(responseJson.endTime)
-      merchantDetailResponse.is24Hours = responseJson.is24Hours
-      merchantDetailResponse.isClose = responseJson.isClose
       //状态变成
       this.setState({
-        merchantDetailResponse: merchantDetailResponse,
+        merchantDetailDTO: {
+          startTime: new Date(responseJson.startTime),
+          endTime: new Date(responseJson.endTime),
+          is24Hours: responseJson.is24Hours,
+          isClose: responseJson.isClose
+        },
         isInit: true
       });
-    }, (error) =>{
-      console.log("有错误",error)
+    }, (error) => {
+      message.error("加载失败",error)
     })
 
   }
 
 
   //是否休息切换
-  isCloseOnChange(checked: boolean, event: Event){
-
-    //需要更新的值
-    let merchantDetailResponse = new MerchantDetailResponse();
-    merchantDetailResponse.startTime = this.state.merchantDetailResponse?.startTime as Date
-    merchantDetailResponse.endTime = this.state.merchantDetailResponse?.endTime as Date
-    merchantDetailResponse.isClose = checked
-    merchantDetailResponse.is24Hours = this.state.merchantDetailResponse?.is24Hours as boolean
-
-    let api = updateMerchant(merchantDetailResponse);
-    api.then(response => {
-      if(response.code == 0){
-        return response.data;
-      }
-    }).then(responseJson => {
-      //更新成功
-      this.setState({merchantDetailResponse:merchantDetailResponse})
-    })
-
+  isCloseOnChange(checked: boolean, event: Event) {
+    this.setState({merchantDetailDTO: {...this.state.merchantDetailDTO, isClose: checked}})
   }
 
   //是否24小时
-  is24HoursOnChange(checked: boolean, event: Event){
-    //需要更新的值
-    let merchantDetailResponse = new MerchantDetailResponse();
-    merchantDetailResponse.startTime = this.state.merchantDetailResponse?.startTime as Date
-    merchantDetailResponse.endTime = this.state.merchantDetailResponse?.endTime as Date
-    merchantDetailResponse.isClose = this.state.merchantDetailResponse?.isClose as boolean
-    merchantDetailResponse.is24Hours = checked
+  is24HoursOnChange(checked: boolean, event: Event) {
+    this.setState({merchantDetailDTO: {...this.state.merchantDetailDTO, is24Hours: checked}})
+  }
 
-    let api = updateMerchant(merchantDetailResponse);
+  //开始营业时间
+  startTimeOnChange(time: Moment, timeString: string) {
+    this.setState({merchantDetailDTO: {...this.state.merchantDetailDTO, startTime: time.toDate()}})
+  }
+
+  //结束营业时间
+  endTimeOnChange(time: Moment, timeString: string) {
+    this.setState({merchantDetailDTO: {...this.state.merchantDetailDTO, endTime: time.toDate()}})
+  }
+
+  //更新商家数据
+  updateMerchant(){
+
+    //数据验证
+    let startTime = this.state.merchantDetailDTO.startTime.toISOString();
+    let endTime = this.state.merchantDetailDTO.endTime.toISOString();
+    console.log(Date.parse(endTime) - Date.parse(startTime) >= 1000 * 60 * 60 * 3 )
+    if(Date.parse(endTime) - Date.parse(startTime) <= 1000 * 60 * 60 * 3){
+      message.error("营业时间只要3小时")
+      return
+    }
+
+    let api = updateMerchant(this.state.merchantDetailDTO);
     api.then(response => {
-      if(response.code == 0){
+      if (response.code == 0) {
         return response.data;
       }
-    }).then(responseJson => {
-      //更新成功
-      this.setState({merchantDetailResponse:merchantDetailResponse})
+    }).then((responseJson) => {
+      message.info("保存成功")
+    }, (error) => {
+      message.error("保存失败")
     })
   }
 
 
   render() {
 
-    if(!this.state.isInit){
+
+    if (!this.state.isInit) {
       //没有初始化的是时候
       return (
         <Spin tip={"网络慢耐心等待"}>
@@ -103,24 +115,34 @@ export default class Merchant extends React.Component<{}, State> {
     }
 
     return (
-      <Descriptions title="商家信息" layout="vertical" bordered={true}>
-        <Descriptions.Item label="开始营业时间">
-          <TimePicker
-            defaultValue={moment(this.state.merchantDetailResponse?.getStartTimeMomentFormat(), MerchantDetailResponse.format)}
-            format={MerchantDetailResponse.format}/>
-        </Descriptions.Item>
-        <Descriptions.Item label="结束营业时间">
-          <TimePicker
-            defaultValue={moment(this.state.merchantDetailResponse?.getEndTimeMomentFormat(), MerchantDetailResponse.format)}
-            format={MerchantDetailResponse.format}/>
-        </Descriptions.Item>
-        <Descriptions.Item label="是否二十四小时营业">
-          <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={this.state.merchantDetailResponse?.is24Hours}  onChange={this.is24HoursOnChange.bind(this)}/>
-        </Descriptions.Item>
-        <Descriptions.Item label="是否休息">
-          <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={this.state.merchantDetailResponse?.isClose} onChange={this.isCloseOnChange.bind(this)} />
-        </Descriptions.Item>
-      </Descriptions>
+      <React.Fragment>
+
+        {/*详情页*/}
+        <Descriptions title="商家信息" layout="vertical" bordered={true}>
+          <Descriptions.Item label="开始营业时间">
+            <TimePicker
+              defaultValue={moment(this.state.merchantDetailDTO.startTime, "HH:mm")}
+              format={"HH:mm"} onChange={this.startTimeOnChange.bind(this)}/>
+          </Descriptions.Item>
+          <Descriptions.Item label="结束营业时间">
+            <TimePicker
+              defaultValue={moment(this.state.merchantDetailDTO.endTime, "HH:mm")}
+              format={"HH:mm"} onChange={this.endTimeOnChange.bind(this)}/>
+          </Descriptions.Item>
+          <Descriptions.Item label="是否二十四小时营业">
+            <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={this.state.merchantDetailDTO.is24Hours}
+                    onChange={this.is24HoursOnChange.bind(this)}/>
+          </Descriptions.Item>
+          <Descriptions.Item label="是否休息">
+            <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={this.state.merchantDetailDTO.isClose}
+                    onChange={this.isCloseOnChange.bind(this)}/>
+          </Descriptions.Item>
+        </Descriptions>
+
+        {/*提交按钮*/}
+        <Button type="primary" block onClick={this.updateMerchant.bind(this)}>保存</Button>
+
+      </React.Fragment>
     );
   }
 }

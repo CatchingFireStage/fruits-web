@@ -454,7 +454,7 @@ var WorkerMessageHandler = {
         ensureNotTerminated();
 
         if (ex instanceof _util.PasswordException) {
-          var task = new WorkerTask("PasswordException: response ".concat(ex.code));
+          var task = new WorkerTask("PasswordException: dto ".concat(ex.code));
           startWorkerTask(task);
           handler.sendWithPromise("PasswordRequest", ex).then(function (data) {
             finishWorkerTask(task);
