@@ -1,17 +1,13 @@
 import React from "react";
-import {Descriptions, Switch, Spin, TimePicker, Button,message} from 'antd';
+import {Descriptions, Switch, Spin, TimePicker, Button, message} from 'antd';
 import {getMerchant, updateMerchant} from "./services"
 import moment, {Moment} from 'moment';
+import {MerchantDetailDTO} from "./dto/MerchantDetailDTO"
 
 
 interface State {
   //服务端的接口返回数据
-  merchantDetailDTO: {
-    startTime: Date,
-    endTime: Date,
-    is24Hours: boolean,
-    isClose: boolean
-  }
+  merchantDetailDTO: MerchantDetailDTO
   //是否第一次加载过
   isInit: boolean
 }
@@ -32,28 +28,15 @@ export default class Merchant extends React.Component<{}, State> {
 
   //组件挂在的时候会调用
   componentDidMount() {
-
     //获取商家信息
-    let api = getMerchant();
-    api.then(response => {
-      if (response.code == 0) {
-        return response.data;
-      }
-    }).then((responseJson) => {
-
+    getMerchant((merchantDetailDTO) => {
       //状态变成
       this.setState({
-        merchantDetailDTO: {
-          startTime: new Date(responseJson.startTime),
-          endTime: new Date(responseJson.endTime),
-          is24Hours: responseJson.is24Hours,
-          isClose: responseJson.isClose
-        },
+        merchantDetailDTO: merchantDetailDTO,
         isInit: true
       });
-    }, (error) => {
-      message.error("加载失败",error)
-    })
+
+    });
 
   }
 
@@ -79,27 +62,20 @@ export default class Merchant extends React.Component<{}, State> {
   }
 
   //更新商家数据
-  updateMerchant(){
+  updateMerchant() {
 
+    console.log(this.state.merchantDetailDTO.startTime)
     //数据验证
     let startTime = this.state.merchantDetailDTO.startTime.toISOString();
     let endTime = this.state.merchantDetailDTO.endTime.toISOString();
-    console.log(Date.parse(endTime) - Date.parse(startTime) >= 1000 * 60 * 60 * 3 )
-    if(Date.parse(endTime) - Date.parse(startTime) <= 1000 * 60 * 60 * 3){
+    console.log(Date.parse(endTime) - Date.parse(startTime) >= 1000 * 60 * 60 * 3)
+    if (Date.parse(endTime) - Date.parse(startTime) <= 1000 * 60 * 60 * 3) {
       message.error("营业时间只要3小时")
       return
     }
 
-    let api = updateMerchant(this.state.merchantDetailDTO);
-    api.then(response => {
-      if (response.code == 0) {
-        return response.data;
-      }
-    }).then((responseJson) => {
-      message.info("保存成功")
-    }, (error) => {
-      message.error("保存失败")
-    })
+    //更新商家数据
+    updateMerchant(this.state.merchantDetailDTO);
   }
 
 
