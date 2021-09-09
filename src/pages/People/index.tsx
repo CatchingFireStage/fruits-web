@@ -87,6 +87,8 @@ export default class People extends React.Component<any, State> {
       showTotal: (total: number) => `共 ${total} 条`
 
     }
+
+    
     return (
 
       <div className={styles.header}>
