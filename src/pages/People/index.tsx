@@ -1,8 +1,10 @@
 import React from "react";
-import {Pagination, PageHeader, Table, Button, Descriptions, Input, Spin} from 'antd';
+import {PageHeader, Table, Button, Descriptions, Input, Spin} from 'antd';
 import {UserListDTO} from "@/pages/People/dto/UserListDTO";
 import {getUserList} from "@/pages/People/services";
 import Column from "antd/lib/table/Column";
+import {PaginationConfig} from "antd/lib/pagination";
+import styles from "@/pages/spu/category/style.less";
 
 
 interface State {
@@ -47,7 +49,8 @@ export default class People extends React.Component<any, State> {
 
     getUserList(page, this.state.query.keyword, (userListDTO) => {
       this.setState({
-        userListDTO: userListDTO
+        userListDTO: userListDTO,
+        query: {...this.state.query, p: page}
       })
     })
   }
@@ -73,41 +76,46 @@ export default class People extends React.Component<any, State> {
       );
     }
 
+    // 分页配置
+    let paginationConfig: PaginationConfig = {
+      total: this.state.userListDTO?.total,
+      current: this.state.query.p,
+      pageSize: 1,
+      showSizeChanger: true,
+      showQuickJumper: true,
+      onChange: this.pageData.bind(this),
+      showTotal: (total: number) => `共 ${total} 条`
 
+    }
     return (
 
-      <React.Fragment>
+      <div className={styles.header}>
 
-        <Table dataSource={this.state.userListDTO?.userDTOList}
-               bordered
-               title={() =>
-                 <PageHeader
-                   ghost={false}
-                   onBack={() => window.history.back()}
-                   title="过滤"
-                   subTitle="选择过滤条件"
-                   extra={[
-                     <Button key="1" type="primary" onClick={this.query.bind(this)}>
-                       查询
-                     </Button>,
-                   ]}
-                 >
-                   <Descriptions size="small" column={3}>
-                     <Descriptions.Item label="搜索手机号">
-                       <Input placeholder="手机号" onChange={(e) => {
-                         this.setState({query: {...this.state.query, keyword: e.target.value}})
-                       }}/>
-                     </Descriptions.Item>
-                   </Descriptions>
-                 </PageHeader>
-               }
+        <PageHeader
+          ghost={false}
+          onBack={() => window.history.back()}
+          title="过滤"
+          subTitle="选择过滤条件"
+          extra={[
+            <Button key="1" type="primary" onClick={this.query.bind(this)}>
+              查询
+            </Button>,
+          ]}
+        >
+          <Descriptions size="small" column={3}>
+            <Descriptions.Item label="搜索手机号">
+              <Input placeholder="手机号" onChange={(e) => {
+                this.setState({query: {...this.state.query, keyword: e.target.value}})
+              }}/>
+            </Descriptions.Item>
+          </Descriptions>
+        </PageHeader>
 
-               footer={
-                 () =>
-                   <Pagination defaultCurrent={this.state.query.p} total={this.state.userListDTO?.total}
-                               defaultPageSize={1} onChange={this.pageData.bind(this)}/>
-               }
-               pagination={false}
+        <Table
+          className={styles.main}
+          dataSource={this.state.userListDTO?.userDTOList}
+          bordered
+          pagination={paginationConfig}
         >
 
 
@@ -117,7 +125,7 @@ export default class People extends React.Component<any, State> {
         </Table>
 
 
-      </React.Fragment>
+      </div>
 
     );
   }
