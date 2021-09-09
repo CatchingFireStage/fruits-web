@@ -120,6 +120,12 @@ export default {
           component:"./Merchant"
         },
         {
+          path: '/people',
+          name: '用户管理',
+          icon: 'welcome',
+          component:"./People"
+        },
+        {
           component: './404',
         },
       ],
