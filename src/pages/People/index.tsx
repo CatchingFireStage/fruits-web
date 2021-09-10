@@ -81,14 +81,14 @@ export default class People extends React.Component<any, State> {
       total: this.state.userListDTO?.total,
       current: this.state.query.p,
       pageSize: 1,
-      showSizeChanger: true,
+      showSizeChanger: false,
       showQuickJumper: true,
       onChange: this.pageData.bind(this),
       showTotal: (total: number) => `共 ${total} 条`
 
     }
 
-    
+
     return (
 
       <div className={styles.header}>
