@@ -114,6 +114,7 @@ export default class People extends React.Component<any, State> {
         </PageHeader>
 
         <Table
+          rowKey={(scope: any) => scope.id}
           className={styles.main}
           dataSource={this.state.userListDTO?.userDTOList}
           bordered

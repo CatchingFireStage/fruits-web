@@ -97,7 +97,7 @@ export default class Merchant extends React.Component<{}, State> {
           onBack={() => window.history.back()}
           title="商家信息"
           extra={[
-            <Button  type="primary" block onClick={this.updateMerchant.bind(this)}>
+            <Button key='save' type="primary" block onClick={this.updateMerchant.bind(this)}>
               保存
             </Button>,
           ]}
@@ -105,21 +105,21 @@ export default class Merchant extends React.Component<{}, State> {
 
           {/*详情页*/}
           <Descriptions layout="vertical" bordered={true}>
-            <Descriptions.Item label="开始营业时间">
+            <Descriptions.Item label="开始营业时间" key='start'>
               <TimePicker
                 defaultValue={moment(this.state.merchantDetailDTO.startTime, "HH:mm")}
                 format={"HH:mm"} onChange={this.startTimeOnChange.bind(this)}/>
             </Descriptions.Item>
-            <Descriptions.Item label="结束营业时间">
+            <Descriptions.Item label="结束营业时间" key='end'>
               <TimePicker
                 defaultValue={moment(this.state.merchantDetailDTO.endTime, "HH:mm")}
                 format={"HH:mm"} onChange={this.endTimeOnChange.bind(this)}/>
             </Descriptions.Item>
-            <Descriptions.Item label="是否二十四小时营业">
+            <Descriptions.Item label="是否二十四小时营业" key='isAllDay'>
               <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={this.state.merchantDetailDTO.is24Hours}
                       onChange={this.is24HoursOnChange.bind(this)}/>
             </Descriptions.Item>
-            <Descriptions.Item label="是否休息">
+            <Descriptions.Item label="是否休息" key='isRest'>
               <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked={this.state.merchantDetailDTO.isClose}
                       onChange={this.isCloseOnChange.bind(this)}/>
             </Descriptions.Item>
