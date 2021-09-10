@@ -107,10 +107,26 @@ export default {
           icon: 'welcome',
           routes: [
             {
+              name: '商品管理',
+              path: '/spu/list',
+              component: './spu/list',
+            },
+            {
               name: '分类管理',
               path: '/spu/category',
               component: './spu/category',
             },
+            {
+              name: '规格管理',
+              path: '/spu/specification',
+              component: './spu/specification',
+            },
+            {
+              name: '规格关联',
+              path: '/spu/relevance',
+              component: './spu/relevance',
+            },
+            
           ],
         },
         {
