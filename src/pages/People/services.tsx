@@ -2,7 +2,10 @@ import request from '@/utils/request';
 import {UserListDTO, UserDTO} from "@/pages/People/dto/UserListDTO";
 
 
-//商家详情
+//用户列表页
+//p 第几页
+//keyword 搜索的关键字
+//callback 回调函数
 export function getUserList(p: number, keyword: string, callback: (userListDTO: UserListDTO) => void) {
 
   let urlSearchParams = new URLSearchParams();
