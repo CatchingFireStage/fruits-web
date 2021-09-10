@@ -1,17 +1,17 @@
 import request from '@/utils/request';
 import {UserListDTO, UserDTO} from "@/pages/People/dto/UserListDTO";
+import {PageParams} from "@/utils/request/params";
 
+
+//请求用户列表的参数
+interface RequestUserListParams extends PageParams {
+  keyword?: string
+}
 
 //用户列表页
-//p 第几页
-//keyword 搜索的关键字
+//params 请求参数
 //callback 回调函数
-export function getUserList(params: {
-  p: number,
-  pageSize?: number,
-  keyword?: string,
-}, callback: (userListDTO: UserListDTO) => void) {
-
+export function getUserList(params: RequestUserListParams, callback: (userListDTO: UserListDTO) => void) {
 
   request("/admin/user/user", {
     method: 'get',
