@@ -6,23 +6,18 @@ import {UserListDTO, UserDTO} from "@/pages/People/dto/UserListDTO";
 //p 第几页
 //keyword 搜索的关键字
 //callback 回调函数
-export function getUserList(p: number, keyword: string, callback: (userListDTO: UserListDTO) => void) {
-
-  let urlSearchParams = new URLSearchParams();
-
-  urlSearchParams.set("p", p.toString());
-  urlSearchParams.set("pageSize","1");
-
-  if (keyword.length > 0) {
-    urlSearchParams.set("keyword", keyword);
-  }
+export function getUserList(params: {
+  p: number,
+  pageSize?: number,
+  keyword?: string,
+}, callback: (userListDTO: UserListDTO) => void) {
 
 
-  request("/admin/user/user?" + urlSearchParams.toString(), {
-    method: 'get'
+  request("/admin/user/user", {
+    method: 'get',
+    params
   }).then(response => {
     if (response.code == 0) {
-
       let userDTOArray: Array<UserDTO> = []
 
 

@@ -33,7 +33,10 @@ export default class People extends React.Component<any, State> {
   //组件挂在的时候会调用
   componentDidMount() {
     // 获取商家信息
-    getUserList(this.state.query.p, this.state.query.keyword, (userListDTO) => {
+    getUserList({
+      p: this.state.query.p,
+      keyword: this.state.query.keyword
+    }, (userListDTO) => {
       //状态变成
       this.setState({
         userListDTO: userListDTO,
@@ -47,7 +50,10 @@ export default class People extends React.Component<any, State> {
   //翻页数据
   pageData(page: number, pageSize?: number) {
 
-    getUserList(page, this.state.query.keyword, (userListDTO) => {
+    getUserList({
+      p: page,
+      keyword: this.state.query.keyword
+    }, (userListDTO) => {
       this.setState({
         userListDTO: userListDTO,
         query: {...this.state.query, p: page}
@@ -57,7 +63,7 @@ export default class People extends React.Component<any, State> {
 
   //查询
   query() {
-    getUserList(1, this.state.query.keyword, userListDTO => {
+    getUserList({p: 1, keyword: this.state.query.keyword}, userListDTO => {
       this.setState({
         userListDTO: userListDTO,
         query: {...this.state.query, p: 1}
@@ -80,7 +86,6 @@ export default class People extends React.Component<any, State> {
     let paginationConfig: PaginationConfig = {
       total: this.state.userListDTO?.total,
       current: this.state.query.p,
-      pageSize: 1,
       showSizeChanger: false,
       showQuickJumper: true,
       onChange: this.pageData.bind(this),
