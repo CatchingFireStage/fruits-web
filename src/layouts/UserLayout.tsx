@@ -3,9 +3,9 @@
  * @Author: LaughingZhu
  * @Date: 2020-12-22 17:47:16
  * @LastEditros: 
- * @LastEditTime: 2021-08-18 17:14:47
+ * @LastEditTime: 2021-09-10 13:55:31
  */
-import { DefaultFooter, MenuDataItem, getMenuData, getPageTitle } from '@ant-design/pro-layout';
+import { MenuDataItem, getMenuData, getPageTitle } from '@ant-design/pro-layout';
 import { Helmet } from 'react-helmet';
 import { Link } from 'umi';
 import React from 'react';

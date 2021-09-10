@@ -3,21 +3,11 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-06 15:54:56
  * @LastEditros: 
- * @LastEditTime: 2021-08-18 18:09:16
+ * @LastEditTime: 2021-09-10 15:46:05
  */
 import React from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card, Typography, Alert } from 'antd';
-
-import styles from './Welcome.less';
-
-const CodePreview: React.FC<{}> = ({ children }) => (
-  <pre className={styles.pre}>
-    <code>
-      <Typography.Text copyable>{children}</Typography.Text>
-    </code>
-  </pre>
-);
+import { Card } from 'antd';
 
 export default (): React.ReactNode => (
   <PageHeaderWrapper>

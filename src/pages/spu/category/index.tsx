@@ -3,9 +3,10 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-18 17:58:07
  * @LastEditros: 
- * @LastEditTime: 2021-08-28 09:20:06
+ * @LastEditTime: 2021-09-10 15:08:27
  */
 import { Button, Input, message, Modal, PageHeader, Popconfirm, Table } from 'antd';
+import { PaginationConfig } from 'antd/lib/pagination';
 import Column from 'antd/lib/table/Column';
 import React, { useState, useEffect } from 'react'
 import { addCategroy, deleteCategoryById, editCategroy, getCategoryList } from '../services';
@@ -49,12 +50,12 @@ function Category () {
 
 
   // 分页配置 处理函数
-  const painationHandle = (current_page: number, pageSize: number) => {
+  const painationHandle = (current_page: number, pageSize?: number) => {
     const config = Object.assign({}, pageInfo)
     
     setPageInfo({
       ...config,
-      pageSize: pageSize,
+      pageSize: pageSize || 10,
       page: current_page
     })
   }
@@ -132,14 +133,14 @@ function Category () {
   )
 
   // 分页配置
-  const paginationConfig = {
+  const paginationConfig: PaginationConfig = {
     total: pageInfo.total,
     current: pageInfo.page,
     pageSize: pageInfo.pageSize,
     showSizeChanger: true,
     showQuickJumper: true,
-    onChange: (page: number, pageSize: number) => painationHandle(page, pageSize),
-    onShowSizeChange: (current: number, size: number) => painationHandle(current, size),
+    onChange: (page: number, pageSize?: number) => painationHandle(page, pageSize),
+    onShowSizeChange: (current: number, size?: number) => painationHandle(current, size),
     showTotal: (total: number) => `共 ${total} 条`
 
   }
@@ -154,7 +155,7 @@ function Category () {
         // subTitle="This is a subtitle"
         extra={[
           <Button onClick={() => resetSearch()} key="3" type='ghost'>重置</Button>,
-          <Button onClick={getTableData} key="2" type='ghost'>查询</Button>,
+          <Button onClick={() => getTableData()} key="2" type='ghost'>查询</Button>,
           <Button key="1" type="primary" onClick={() => modalHandle(true, {id: undefined, name: ''})}>添加分类</Button>,
         ]}
       >
