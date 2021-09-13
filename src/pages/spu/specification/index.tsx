@@ -3,14 +3,15 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-18 17:58:07
  * @LastEditros: 
- * @LastEditTime: 2021-09-10 20:24:12
+ * @LastEditTime: 2021-09-13 18:31:34
  */
-import { Button, Input, message, Modal, PageHeader, Popconfirm, Table } from 'antd';
+import { Button, Input, Modal, PageHeader, Popconfirm, Table } from 'antd';
 import { PaginationConfig } from 'antd/lib/pagination';
 import Column from 'antd/lib/table/Column';
 import React, { Component } from 'react'
-import { addCategroy, deleteCategoryById, editCategroy, getCategoryList } from '../services';
+import { addSpecification, addSpecificationValue, delSpecificationValue, editSpecification, editSpecificationValue, specifications } from '../services';
 import styles from '../category/style.less'
+import { SpecificationTableData } from '../spu.dto';
 
 interface IProps {}
 interface IState {
@@ -19,73 +20,56 @@ interface IState {
   detail: any;
   modalStatus: boolean;
   pageInfo: {
-    page: number;
+    p: number;
     pageSize: number;
     total: number | undefined
-  }
+  },
+  type: boolean
 }
+
 export default class Specification extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props)
     this.state = {
       keyword: '',
-      tableData: [
-        {
-          id: 1,
-          value: '温度',
-          money: '10元',
-          data: [
-            {
-              money: '1元',
-              id: 1,
-              value: '常温'
-            },
-            {
-              money: '2元',
-              id: 2,
-              value: '加热'
-            }
-          ]
-        },
-        {
-          id: 2,
-          value: '糖',
-          money: '0元',
-          data: []
-        }
-      ],
-      detail: {},
+      tableData: [],
+      detail: {
+        id: undefined,
+        name: '',
+        money: undefined,
+        specificationId: undefined
+      },
       modalStatus: false,
       pageInfo: {
-        page: 1,
+        p: 1,
         pageSize: 10,
         total: undefined
-      }
+      },
+      type: false
     }
   }
 
   componentDidMount = () => {
-    // this.getTableData()
+    this._getTableData()
   }
 
   // 获取表格数据
-  getTableData = async (search?: string) => {
+  _getTableData = async (search?: string) => {
     const { keyword, pageInfo } = this.state
     const params = {
       keyword: search !== undefined ? search : keyword,
       ...pageInfo
     }
-    const res = await getCategoryList(params)
-    if (res.code === 0) {
-      // 获取成功
+
+    specifications(params, (res: SpecificationTableData) => {
       this.setState({
-        tableData: res.data.list,
+        tableData: res.tableData,
         pageInfo: {
           ...pageInfo,
-          total: res.data.total
+          total: res.total
         }
       })
-    }
+    })
   }
 
 
@@ -97,85 +81,153 @@ export default class Specification extends Component<IProps, IState> {
       pageInfo: {
         ...config,
         pageSize: pageSize || 10,
-        page: current_page
+        p: current_page
       }
     }, () => {
-      this.getTableData()
+      this._getTableData()
     })
   }
 
-  // 根据id删除对应界面
-  delById = async(id: any) => {
-    const res = await deleteCategoryById(id)
-    if (res.code === 0) {
-      message.success(res.message, 2, () => {
-        this.getTableData()
-      })
-    } else {
-      message.error(res.message, 2)
-    }
-  }
-  // 删除数据处理
-  popconfirmHandle = (type: boolean, id: number) => {
-    if(!type) return false
-
-    // 确认删除
-    this.delById(id)
-    return true
-  }
-
-  // 打开、关闭弹窗
-  modalHandle = (type: boolean, detail?: any) => {
-    if(type) {
+  /**
+   * 打开、关闭弹窗
+   * @param status boolean  弹窗状态
+   * @param isValue boolean 添加类型 false 是规格， true 是规格值
+   * @param detail 内容详情，编辑用
+   * @param specificationId 规格ID
+   */
+  modalHandle = (status: boolean, isValue: boolean, detail?: any) => {
+    if(status) {
       // 打开弹窗
       this.setState({
-        detail,
-        modalStatus: true
+        detail: {
+          ...detail
+        },
+        modalStatus: true,
+        type: isValue
       })
 
     } else {
       // 关闭->清空数据
       this.setState({
         modalStatus: false,
+        type: isValue,
         detail: {
+          id: undefined,
           name: '',
-          id: undefined
-        }
+          money: undefined,
+          specificationId: undefined
+        },
       })
     }
   }
 
   // 编辑分类
   submit = async() => {
-    const {detail} = this.state
-    let res
-    if(detail.id !== undefined) {
-      // 编辑更新
-      res = await editCategroy({name: detail.name}, detail.id)
+    const { detail, type } = this.state
+    let reqData
+
+    if(type) {
+      // 规格值
+      reqData = {
+        id: detail.id,
+        value: detail.name,
+        specificationId: detail.specificationId,
+        money: detail.money,
+      }
+    
+      this.specificationValueHandle(reqData, detail.id === undefined ? false: true)
+    } else {
+      // 规格
+      reqData = {
+        id: detail.id,
+        name: detail.name
+      }
+      this.specificationHandle(reqData, detail.id === undefined ? false: true)
+    }
+  }
+
+
+  /**
+   * @desc 规格值编辑、新增处理
+   * @param requestData 
+   * @param isEdit 是否是编辑
+   */
+  specificationValueHandle = (requestData: {
+    id: number | undefined,
+    specificationId: number,
+    money: number,
+    value: string,
+  }, isEdit: boolean) => {
+    if(isEdit) {
+      // 编辑
+      editSpecificationValue(requestData, () => {
+        this._getTableData()
+        this.resetFormValues()
+      })
+
     } else {
       // 新增
-      res = await addCategroy({name: detail.name})
-    }
-
-    if (res.code === 0) {
-      message.success(res.msg, 2, () => {
-        this.setState({
-          modalStatus: false,
-        }, () => {
-          this.getTableData()
-        })
+      addSpecificationValue(requestData, () => {
+        this._getTableData()
+        this.resetFormValues()
       })
+
     }
   }
 
-  resetSearch = () => {
-    setKeyword('')
-    setTimeout(() => {
-      getTableData('')
-    }, 20);
+  /**
+   * @desc 规格编辑、新增处理
+   * @param requestData 
+   * @param isEdit 是否是编辑
+   */
+  specificationHandle = (requestData: {
+    id: number | undefined,
+    name: string
+  }, isEdit: boolean) => {
+    if(isEdit) {
+      // 编辑
+      editSpecification(requestData, () => {
+        this._getTableData()
+        this.resetFormValues()
+      })
+
+    } else {
+      // 新增
+      addSpecification(requestData, () => {
+        this._getTableData()
+        this.resetFormValues()
+      })
+
+    }
   }
 
 
+  // 删除数据处理
+  popconfirmHandle = (type: boolean, id: number) => {
+    if(!type) return false
+
+    // 确认删除
+    delSpecificationValue(id, () => {
+      this._getTableData()
+    })
+    return true
+  }
+
+
+  // 重置搜索
+  resetSearch = () => {
+    this.setState({
+      keyword: ''
+    }, () => {
+      this._getTableData()
+    })
+  }
+
+  /**
+   * @desc 规格值渲染
+   * @param expandData [{ id: number, value: string, title: string }]
+   * @returns 
+   */
   expandedRowRender = (expandData: any) => {
     console.log(expandData, '额外行')
 
@@ -185,7 +237,7 @@ export default class Specification extends Component<IProps, IState> {
         rowKey={(record: any) => `sp_id_${record.id}`}
         pagination={false}
         bordered
-        dataSource={expandData}>
+        dataSource={expandData.values}>
         <Column align='center' title="规格值序号" dataIndex="id" key="id" />
         <Column align='center' title="规格值名" dataIndex="value" key="value" />
         <Column align='center' title="价钱" dataIndex="money" key="money" />
@@ -204,7 +256,8 @@ export default class Specification extends Component<IProps, IState> {
                 cancelText="取消">
                 <Button type='danger' >删除</Button>
               </Popconfirm>
-              <Button onClick={() => this.modalHandle(true, record)}  type='primary' style={{marginLeft: 20}} >编辑</Button>
+              <Button onClick={() => this.modalHandle(true, true, {
+                ...record,name: record.value,specificationId: expandData.id})}  type='primary' style={{marginLeft: 20}} >编辑</Button>
             </>
           )}
         />
@@ -212,17 +265,52 @@ export default class Specification extends Component<IProps, IState> {
     )
   }
 
+
+  inputHandle = (type: 'name' | 'money', value: number | string) => {
+    console.log(type, value, typeof(value))
+    if(type === 'name') {
+      this.setState({
+        detail: {
+          ...this.state.detail,
+          name: value
+        }
+      })
+    } else {
+      this.setState({
+        detail: {
+          ...this.state.detail,
+          money: Number(value)
+        }
+      })
+    }
+  }
+
+  /**
+   * @desc 重置表单值，关闭弹窗
+   */
+  resetFormValues = () => {
+    this.setState({
+      detail: {
+        id: undefined,
+        name: '',
+        money: 0,
+        specificationId: undefined
+      },
+      modalStatus: false,
+    })
+  }
+
   
 
 
   render () {
-    const { keyword, pageInfo, tableData, modalStatus, detail } = this.state
-
+    const { keyword, pageInfo, tableData, modalStatus, detail, type } = this.state
+    console.log(detail, 'console detail')
      // 搜索框内容
     const header = (
       <div className={styles.header}>
         <div className={styles.item}>
-          <Input size='large' onChange={(e) => this.setState({keyword: e.target.value})} value={keyword} placeholder="请输入分类名称" />,
+          <Input size='large' onChange={(e) => this.setState({keyword: e.target.value})} value={keyword} placeholder="请输入分类名称" />
         </div>
       </div>
     )
@@ -230,7 +318,7 @@ export default class Specification extends Component<IProps, IState> {
     // 分页配置
     const paginationConfig: PaginationConfig = {
       total: pageInfo.total,
-      current: pageInfo.page,
+      current: pageInfo.p,
       pageSize: pageInfo.pageSize,
       showSizeChanger: true,
       showQuickJumper: true,
@@ -247,8 +335,8 @@ export default class Specification extends Component<IProps, IState> {
           title="SPU规格管理"
           extra={[
             <Button onClick={() => this.resetSearch()} key="3" type='ghost'>重置</Button>,
-            <Button onClick={() => this.getTableData()} key="2" type='ghost'>查询</Button>,
-            <Button key="1" type="primary" onClick={() => this.modalHandle(true, {id: undefined, name: ''})}>添加分类</Button>,
+            <Button onClick={() => this._getTableData()} key="2" type='ghost'>查询</Button>,
+            <Button key="1" type="primary" onClick={() => this.modalHandle(true, false,{id: undefined, name: ''})}>添加规格</Button>,
           ]}
         >
           {header}
@@ -257,44 +345,41 @@ export default class Specification extends Component<IProps, IState> {
           className={styles.main}
           rowKey={(record: any) => record.id}
           pagination={paginationConfig}
-          expandedRowRender={(record: any) => this.expandedRowRender(record.data)}
+          expandedRowRender={(record: any) => this.expandedRowRender(record)}
           dataSource={tableData}>
           
-          <Column align='center' title="序号" dataIndex="id" key="id" />
-          <Column align='center' title="规格名" dataIndex="value" key="value" />
+            
+          <Column width={'30%'} align='center' title="序号" dataIndex="id" key="id" />
+          <Column width={'30%'} align='center' title="规格名" dataIndex="name" key="name" />
   
           <Column
             title="操作"
             key="action"
+            width={'40%'}
+            
             align='center'
             render={(record: any) => (
               <>
-                <Popconfirm
-                  onConfirm={()=> this.popconfirmHandle(true, record.id)}
-                  onCancel={() => this.popconfirmHandle(false, record.id)}
-                  title="确认删除该条数据？"
-                  okText="确定"
-                  cancelText="取消">
-                  <Button type='danger' >删除</Button>
-                </Popconfirm>
-                <Button onClick={() => this.modalHandle(true, record)}  type='primary' style={{marginLeft: 20}} >编辑</Button>
+                <Button onClick={() => this.modalHandle(true, false, record)}  type='default' style={{marginLeft: 20}} >编辑</Button>
+                <Button onClick={() => this.modalHandle(true, true, {id: undefined, name: '', money: undefined, specificationId: record.id})}  type='primary' style={{marginLeft: 20}} >添加规格值</Button>
               </>
             )}
           />
         </Table>
   
         <Modal
-          title="编辑分类"
+          title={`${detail.id === undefined ? '新增': '编辑'}${type ? '规格值': '规格'}`}
           visible={modalStatus}
           onOk={this.submit}
           okText='确定'
           cancelText='取消'
-          onCancel={() => this.modalHandle(false)}
+          onCancel={() => this.modalHandle(false, false)}
         >
           <div className={styles.modal}>
-            <Input size='large' onChange={(e) => this.setState({
-              ...detail, name: e.target.value
-            })} value={detail.name} placeholder="请输入分类名称" />,
+            <Input size='large' onChange={(e) => this.inputHandle('name', e.target.value)} value={detail.name} placeholder={`请输入规格${type ? '值': ''}名称`} />
+            {type && (
+              <Input prefix="￥" suffix="RMB" style={{marginTop: '20px'}} size='large' type='number' onChange={(e) => this.inputHandle('money', e.target.value)} value={detail.money} placeholder="请输入价钱" />
+            )}
           </div>
         </Modal>
       </div>
