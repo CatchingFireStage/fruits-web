@@ -9,7 +9,6 @@
     "ui": "umi ui",
     "start": "umi dev NODE_ENV=development",
     "build": "umi build",
-    "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
     "test:coverage": "umi-test --coverage"
@@ -90,7 +89,6 @@
     "import-sort-parser-babylon": "^6.0.0",
     "import-sort-parser-typescript": "^6.0.0",
     "import-sort-style-module": "^6.0.0",
-    "jest-puppeteer": "^4.2.0",
     "jsdom-global": "^3.0.2",
     "lint-staged": "^9.0.0",
     "mockjs": "^1.0.1-beta3",
@@ -102,9 +100,6 @@
     "umi-plugin-pro": "^1.0.2",
     "umi-types": "^0.5.0",
     "yorkie": "^2.0.0"
-  },
-  "optionalDependencies": {
-    "puppeteer": "^2.0.0"
   },
   "engines": {
     "node": ">=10.0.0"
