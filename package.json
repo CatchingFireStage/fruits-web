@@ -9,8 +9,7 @@
     "ui": "umi ui",
     "start": "umi dev NODE_ENV=development",
     "build": "umi build",
-    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
-    "test": "umi-test"
+    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
