@@ -3,13 +3,13 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-18 17:58:07
  * @LastEditros: 
- * @LastEditTime: 2021-09-14 00:08:51
+ * @LastEditTime: 2021-09-14 00:12:19
  */
 import { Button, Input, Modal, PageHeader, Popconfirm, Table } from 'antd';
 import { PaginationConfig } from 'antd/lib/pagination';
 import Column from 'antd/lib/table/Column';
 import React, { Component } from 'react'
-import { addSpecification,  addSpecificationValue, delSpecificationValue, editSpecification, editSpecificationValue, specifications } from '../services';
+import { addSpecification,   addSpecificationValue, delSpecificationValue, editSpecification, editSpecificationValue, specifications } from '../services';
 import styles from '../category/style.less'
 import { SpecificationTableData } from '../spu.dto';
 
