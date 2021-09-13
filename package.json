@@ -15,7 +15,7 @@
     "test:coverage": "umi-test --coverage"
   },
   "gitHooks": {
-    "pre-commit": "lint-staged"
+    "pre-commit": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'"
   },
   "lint-staged": {
     "*.{js,jsx,less,md,json}": [
