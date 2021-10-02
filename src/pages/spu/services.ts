@@ -3,13 +3,13 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-28 08:08:15
  * @LastEditros: 
- * @LastEditTime: 2021-09-13 18:32:03
+ * @LastEditTime: 2021-09-23 11:39:49
  */
 
 import request from '@/utils/request';
 import {PageParams} from "@/utils/request/params";
 import { message } from 'antd';
-import { SpecificationTableData } from './spu.dto';
+import { SpecificationTableData, SpuListTableData } from './spu.dto';
 
 // SPU分类-添加
 export function addCategroy(data: any) {
@@ -154,6 +154,28 @@ export async function delSpecificationValue(id: number, callBack: () => void) {
   if(res.code === 0) {
     message.success(res.msg, 1, () => {
       callBack()
+    })
+  }
+}
+
+
+/**
+ * @description SPU列表
+ * @param params 请求参数
+ * @returns callBack
+ */
+export async function spuList(params: PageParams, callBack: (tableData: SpuListTableData) => void) {
+  let res = await request('/admin/spu/spu', {
+    method: 'get',
+    params
+  })
+
+  if(res.code === 0) {
+    
+
+    return callBack({
+      tableData: res.data.list,
+      total: res.data.total
     })
   }
 }

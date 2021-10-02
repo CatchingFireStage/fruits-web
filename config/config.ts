@@ -120,13 +120,7 @@ export default {
               name: '规格管理',
               path: '/spu/specification',
               component: './spu/specification',
-            },
-            {
-              name: '规格关联',
-              path: '/spu/relevance',
-              component: './spu/relevance',
-            },
-            
+            }
           ],
         },
         {
