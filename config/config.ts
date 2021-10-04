@@ -112,6 +112,11 @@ export default {
               component: './spu/list',
             },
             {
+              name: '商品详情',
+              path: '/spu/list/detail',
+              component: './spu/list/detail',
+            },
+            {
               name: '分类管理',
               path: '/spu/category',
               component: './spu/category',

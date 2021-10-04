@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-09-26 10:59:58
+ * @LastEditTime: 2021-10-02 15:31:36
  */
 
 import { Button, Input, PageHeader, Table } from 'antd';
@@ -14,6 +14,7 @@ import React, { Component } from 'react'
 import styles from '../category/style.less'
 import { spuList } from '../services';
 import { SpuListTableData } from '../spu.dto';
+import router from 'umi/router';
 
 interface IProps {}
 interface IState {
@@ -77,10 +78,23 @@ export default class List extends Component<IProps, IState> {
     })
   }
 
+  // 查看详情
+  onDetail = (id: number) => {
+    if(!id) return false;
+
+    router.push({
+      pathname: '/spu/list/detail',
+      query: {
+        id
+      }
+    })
+    return true
+  }
+
 
 
   render () {
-    const { keyword, pageInfo, tableData } = this.state
+    const { pageInfo, tableData } = this.state
 
      // 搜索框内容
     const header = (
@@ -136,7 +150,7 @@ export default class List extends Component<IProps, IState> {
             align='center'
             render={(record: any) => (
               <>
-                <Button type='default' style={{marginLeft: 20}} >详情</Button>
+                <Button onClick={() => this.onDetail(record.id)} type='default' style={{marginLeft: 20}} >详情</Button>
               </>
             )}
           />

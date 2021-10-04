@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2020-12-22 17:47:16
  * @LastEditros: 
- * @LastEditTime: 2021-09-10 15:28:02
+ * @LastEditTime: 2021-10-02 16:07:51
 -->
 ### 概述
 前端技术栈是蚂蚁金服基于React开源的Umi框架，可以使用React所有的api和属性
@@ -18,4 +18,4 @@ https://v4-pro.ant.design/docs/getting-started-cn
 
 
 ## UI组件库
-https://ant.design/index-cn （版本V4）
+https://ant.design/index-cn （版本V3）

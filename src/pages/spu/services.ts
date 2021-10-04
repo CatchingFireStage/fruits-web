@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-28 08:08:15
  * @LastEditros: 
- * @LastEditTime: 2021-09-23 11:39:49
+ * @LastEditTime: 2021-10-02 15:45:59
  */
 
 import request from '@/utils/request';
@@ -179,4 +179,24 @@ export async function spuList(params: PageParams, callBack: (tableData: SpuListT
     })
   }
 }
+
+/**
+ * 
+ * @param id 商品ID
+ * @param callBack 更新商品详情
+ * @returns 
+ */
+export async function spuDetail(id: number, callBack: (detail: any) => void) {
+  let res = await request(`/admin/spu/sup/${id}`, {
+    method: 'get',
+    params: {}
+  })
+
+  if(res.code === 0) {
+    
+
+    return callBack(res.data)
+  }
+}
+
 

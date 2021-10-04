@@ -1,0 +1,37 @@
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.container {
+  width: 100%;
+  .header {
+    padding: 10px 0;
+    display: flex;
+    .item {
+      flex-basis: calc(100% / 3);
+    }
+  }
+  
+}
+.main {
+  margin-top: 20px;
+  background-color: #fff;
+  
+  .card + .card {
+    margin-top: 10px;
+  }
+  .card {
+    .info {
+      width: 100%;
+      .flex();
+      justify-content: space-between;
+      .item {
+        flex-basis: 40%;
+      }
+    }
+    .pics {
+      
+    }
+  }
+}
