@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-02 15:31:36
+ * @LastEditTime: 2021-10-05 20:32:12
  */
 
 import { Button, Input, PageHeader, Table } from 'antd';
@@ -125,8 +125,8 @@ export default class List extends Component<IProps, IState> {
           title="SPU列表页"
           extra={[
             <Button key="3" type='ghost'>重置</Button>,
-            <Button key="2" type='ghost'>查询</Button>,
-            <Button key="1" type="primary" >新增</Button>,
+            <Button key="2" type='primary' >查询</Button>,
+            // <Button key="1" type="primary" >新增</Button>,
           ]}
         >
           {header}
