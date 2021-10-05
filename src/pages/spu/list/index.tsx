@@ -3,16 +3,16 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-05 20:32:12
+ * @LastEditTime: 2021-10-05 20:46:00
  */
 
-import { Button, Input, PageHeader, Table } from 'antd';
+import { Button, Input, Modal, PageHeader, Table } from 'antd';
 import Column from 'antd/lib/table/Column';
 import { PaginationConfig } from 'antd/lib/pagination';
 
 import React, { Component } from 'react'
 import styles from '../category/style.less'
-import { spuList } from '../services';
+import { delSpu, spuList } from '../services';
 import { SpuListTableData } from '../spu.dto';
 import router from 'umi/router';
 
@@ -91,6 +91,20 @@ export default class List extends Component<IProps, IState> {
     return true
   }
 
+  delSpu = (id: number) => {
+    Modal.confirm({
+      content: `确定要删除该spu记录吗？`,
+      onOk: () => {
+        delSpu(id, () => {
+          this._getList()
+        })
+      },
+      onCancel() {
+        return false;
+      },
+    });
+  }
+
 
 
   render () {
@@ -125,8 +139,8 @@ export default class List extends Component<IProps, IState> {
           title="SPU列表页"
           extra={[
             <Button key="3" type='ghost'>重置</Button>,
-            <Button key="2" type='primary' >查询</Button>,
-            // <Button key="1" type="primary" >新增</Button>,
+            <Button key="2" type='ghost' >查询</Button>,
+            <Button key="1" type="primary" onClick={() => router.push('/spu/list/detail')} >新增</Button>,
           ]}
         >
           {header}
@@ -151,6 +165,8 @@ export default class List extends Component<IProps, IState> {
             render={(record: any) => (
               <>
                 <Button onClick={() => this.onDetail(record.id)} type='default' style={{marginLeft: 20}} >详情</Button>
+                <Button onClick={() => this.delSpu(record.id)} type='danger' style={{marginLeft: 20}} >删除</Button>
+
               </>
             )}
           />
