@@ -3,12 +3,13 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-28 08:08:15
  * @LastEditros: 
- * @LastEditTime: 2021-10-02 15:45:59
+ * @LastEditTime: 2021-10-05 20:44:30
  */
 
 import request from '@/utils/request';
 import {PageParams} from "@/utils/request/params";
 import { message } from 'antd';
+import { router } from 'umi';
 import { SpecificationTableData, SpuListTableData } from './spu.dto';
 
 // SPU分类-添加
@@ -47,7 +48,7 @@ export function editCategroy(data: any, id: string | number) {
  * @param params 请求参数
  * @returns callBack
  */
-export async function specifications(params: PageParams, callBack: (tableData: SpecificationTableData) => void) {
+export async function specifications(params: any, callBack: (tableData: SpecificationTableData) => void) {
   let res = await request('/admin/spu/specifications', {
     method: 'get',
     params
@@ -199,4 +200,83 @@ export async function spuDetail(id: number, callBack: (detail: any) => void) {
   }
 }
 
+/**
+ * @desc 新增SPU
+ * @param data {}
+ * @param callBack 新增
+ * @returns 
+ */
+export async function addSpu(data: FormData) {
+  let res = await request(`/admin/spu/spu`, {
+    method: 'POST',
+    data
+  })
 
+  if(res.code === 0) {
+    
+    message.success(res.msg, 2, () => {
+      router.push('/spu/list')
+    })
+  }
+}
+
+
+// 绑定规格关联
+export async function addSpecificationSpu(data: {
+  spuId: number,
+  required: number,
+  specificationId: number | undefined,
+}, callback: () => void) {
+  let res = await request(`/admin/spu/specificationSpu`, {
+    method: 'POST',
+    data
+  })
+
+  if(res.code === 0) {
+    message.success(res.msg, 2, () => {
+      callback()
+    })
+    
+  }
+}
+
+
+/**
+ * 更新规格
+ * @param data {required: number, id: number}
+ * @returns 
+ */
+export async function updateSpecificationSpu(data: { required: number, id: number}, callBack: () => void) {
+  let res =  await request(`/admin/spu/specificationSpu/${data.id}`, {
+    method: 'put',
+    data
+  })
+  if(res.code === 0) {
+    message.success(res.msg, 1, () => {
+      callBack()
+    })
+  }
+}
+
+
+export async function delSpecificationSpu(id: number, callBack: () => void) {
+  let res =  await request(`/admin/spu/specificationSpu/${id}`, {
+    method: 'delete',
+  })
+  if(res.code === 0) {
+    message.success(res.msg, 1, () => {
+      callBack()
+    })
+  }
+}
+
+export async function delSpu(id: number, callBack: () => void) {
+  let res =  await request(`/admin/spu/spu/${id}`, {
+    method: 'delete',
+  })
+  if(res.code === 0) {
+    message.success(res.msg, 1, () => {
+      callBack()
+    })
+  }
+}
