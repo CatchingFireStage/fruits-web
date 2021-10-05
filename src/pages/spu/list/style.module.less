@@ -6,32 +6,34 @@
 .container {
   width: 100%;
   .header {
-    padding: 10px 0;
-    display: flex;
-    .item {
-      flex-basis: calc(100% / 3);
-    }
-  }
-  
-}
-.main {
-  margin-top: 20px;
-  background-color: #fff;
-  
-  .card + .card {
-    margin-top: 10px;
-  }
-  .card {
-    .info {
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    .content {
+      padding-top: 10px;
       width: 100%;
-      .flex();
-      justify-content: space-between;
       .item {
-        flex-basis: 40%;
+        width: 30%;
       }
     }
-    .pics {
-      
+  }
+  .main {
+    margin-top: 20px;
+  }
+  
+  
+}
+.modal {
+  .item {
+    margin-bottom: 20px;
+    width: 100%;
+    .flex();
+    justify-content: flex-start;
+    
+    .label {
+      width: 80px;
+      flex: none;
+      flex-wrap: nowrap;
     }
   }
 }
