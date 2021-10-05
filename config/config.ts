@@ -113,6 +113,7 @@ export default {
             },
             {
               name: '商品详情',
+              hideInMenu: true,
               path: '/spu/list/detail',
               component: './spu/list/detail',
             },
