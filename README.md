@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2020-12-22 17:47:16
  * @LastEditros: 
- * @LastEditTime: 2021-10-05 20:48:30
+ * @LastEditTime: 2021-10-06 15:52:14
 -->
 ### 概述
 前端技术栈是蚂蚁金服基于React开源的Umi框架，可以使用React所有的api和属性
@@ -25,11 +25,6 @@ https://3x.ant.design/index-cn （版本V3）
 SPU相关页面完成
 
 
-## Issue
-❎ 1.规格状态（都是必选）
+## Issue问题地址
 
-❎ 2.接触关联关系（未删除指定id规格）
-
-❎ 3.新增SPU（未成功）
-
-❎ 4.SPU更新图片、状态等内容是否能放到一个更新的接口中
+https://github.com/CatchingFireStage/fruits-web/issues
