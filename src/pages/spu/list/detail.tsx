@@ -3,14 +3,14 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-08 13:55:18
+ * @LastEditTime: 2021-10-08 15:43:18
  */
 
 import { Button, Card, Form, Icon, Input, message, Modal, PageHeader, Select, Switch, Table, Upload } from 'antd';
 
 import React, { Component } from 'react'
 import styles from './style.module.less'
-import { addSpecificationSpu, addSpu, delSpecificationSpu, getCategoryList, specifications, spuDetail, updateSpecificationSpu } from '../services';
+import { addSpecificationSpu, addSpu, delSpecificationSpu, getCategoryList, specifications, spuDetail, updateSpecificationSpu, updateSpu } from '../services';
 import { debounce } from 'lodash';
 import Column from 'antd/lib/table/Column';
 import { router } from 'umi';
@@ -130,6 +130,7 @@ class Detail extends Component<IProps, IState> {
    * @desc 创建/保存
    */
   onSubmit = () => {
+    const {id} = this.props.location.query
     this.props.form.validateFields((err: any, values: any) => {
       if (!err) {
         const {file, name, money, categoryId, isInventory}  = values
@@ -140,11 +141,26 @@ class Detail extends Component<IProps, IState> {
         reqData.append('categoryId', categoryId)
         reqData.append('isInventory', isInventory ? '1': '0')
 
-        addSpu(reqData)
+        if(id) {
+          // 更新
+          updateSpu({reqData, id}, (res) => {
+            message.success(res.msg, 2)
+            this._initDetail()
+          })
+        } else {
+          // 新增
+          addSpu(reqData, (res) => {
+            message.success(res.msg, 2, () => {
+              router.push('/spu/list')
+            })
+          })
+
+        }
       } else {
         console.log(err)
       }
     });
+    
   }
 
   // 关闭图片预览

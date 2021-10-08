@@ -3,13 +3,12 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-28 08:08:15
  * @LastEditros: 
- * @LastEditTime: 2021-10-05 20:44:30
+ * @LastEditTime: 2021-10-08 15:48:53
  */
 
 import request from '@/utils/request';
 import {PageParams} from "@/utils/request/params";
 import { message } from 'antd';
-import { router } from 'umi';
 import { SpecificationTableData, SpuListTableData } from './spu.dto';
 
 // SPU分类-添加
@@ -206,7 +205,7 @@ export async function spuDetail(id: number, callBack: (detail: any) => void) {
  * @param callBack 新增
  * @returns 
  */
-export async function addSpu(data: FormData) {
+export async function addSpu(data: FormData, callBack: (res: any) => void) {
   let res = await request(`/admin/spu/spu`, {
     method: 'POST',
     data
@@ -214,9 +213,28 @@ export async function addSpu(data: FormData) {
 
   if(res.code === 0) {
     
-    message.success(res.msg, 2, () => {
-      router.push('/spu/list')
-    })
+    callBack(res)
+  }
+}
+
+/**
+ * @desc 更新SPU
+ * @param data {}
+ * @param callBack 
+ * @returns 
+ */
+export async function updateSpu(data: any, callBack: (res: any) => void) {
+  let res = await request(`/admin/spu/spu/${data.id}`, {
+    method: 'POST',
+    data: data.reqData
+  })
+
+  if(res.code === 0) {
+    
+    // message.success(res.msg, 2, () => {
+    //   router.push('/spu/list')
+    // })
+    callBack(res)
   }
 }
 
