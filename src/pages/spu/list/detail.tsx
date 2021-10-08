@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-05 20:29:35
+ * @LastEditTime: 2021-10-08 13:55:18
  */
 
 import { Button, Card, Form, Icon, Input, message, Modal, PageHeader, Select, Switch, Table, Upload } from 'antd';
@@ -98,7 +98,7 @@ class Detail extends Component<IProps, IState> {
         name: detail.name,
         money: detail.money,
         categoryId: '' + detail.category.id,
-        inventory: detail.isInventory ? true: false
+        isisInventory: detail.isisInventory ? true: false
       })
     })
   }
@@ -132,13 +132,13 @@ class Detail extends Component<IProps, IState> {
   onSubmit = () => {
     this.props.form.validateFields((err: any, values: any) => {
       if (!err) {
-        const {file, name, money, categoryId, inventory}  = values
+        const {file, name, money, categoryId, isInventory}  = values
         const reqData = new FormData()
         reqData.append('file', file[0].file)
         reqData.append('name', name)
         reqData.append('money', money)
         reqData.append('categoryId', categoryId)
-        reqData.append('inventory', inventory ? '1': '0')
+        reqData.append('isInventory', isInventory ? '1': '0')
 
         addSpu(reqData)
       } else {
@@ -217,7 +217,7 @@ class Detail extends Component<IProps, IState> {
       this.setState({
         modalStatus,
         modalForm: {
-          required: 0,
+          required: 1,
           specificationId: undefined
         }
       })
@@ -231,13 +231,13 @@ class Detail extends Component<IProps, IState> {
   // 修改规格状态
   tableStatusHandle = (info: {
     required: number,
-    id: number
+    specificationSpuId: number
   }) => {
-    const { required, id } = info
+    const { required, specificationSpuId } = info
     Modal.confirm({
       content: `确定要将状态改为${required ? '非必选' : '必选'}嘛？`,
       onOk: () => {
-        updateSpecificationSpu({id, required: required ? 0 : 1}, () => {
+        updateSpecificationSpu({id: specificationSpuId, required: required ? 0 : 1}, () => {
           this._initDetail();
         })
       },
@@ -250,7 +250,7 @@ class Detail extends Component<IProps, IState> {
   // 解除关联
   tableDelHandle = (id: number) => {
     Modal.confirm({
-      content: `确定要解除改关联关系吗？`,
+      content: `确定要解除该关联关系吗？`,
       onOk: () => {
         delSpecificationSpu(id, () => {
           this._initDetail()
@@ -360,7 +360,7 @@ class Detail extends Component<IProps, IState> {
               )}
             </Form.Item>
             <Form.Item label="是否有货" className={styles.item}>
-              {getFieldDecorator('inventory', {
+              {getFieldDecorator('isInventory', {
                 valuePropName: 'checked',
                 initialValue: true,
                 rules: [
@@ -402,7 +402,7 @@ class Detail extends Component<IProps, IState> {
               render={(record: any) => (
                 <>
                   <Button size='default' onClick={() => this.tableStatusHandle(record)} type='primary'>修改状态</Button>
-                  <Button size='default' onClick={() => this.tableDelHandle(record.id)} style={{ marginLeft: '10px'}} type='danger'>解除关联</Button>
+                  <Button size='default' onClick={() => this.tableDelHandle(record.specificationSpuId)} style={{ marginLeft: '10px'}} type='danger'>解除关联</Button>
                 </>
               )}
             />
