@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-08 15:43:18
+ * @LastEditTime: 2021-10-08 17:31:52
  */
 
 import { Button, Card, Form, Icon, Input, message, Modal, PageHeader, Select, Switch, Table, Upload } from 'antd';
@@ -47,6 +47,7 @@ function getBase64(file: any) {
     reader.onerror = error => reject(error);
   });
 }
+const { Option } = Select;
 
 class Detail extends Component<IProps, IState> {
   constructor(props: IProps) {
@@ -61,6 +62,7 @@ class Detail extends Component<IProps, IState> {
         required: 1,
         specificationId: undefined,
       },
+      // categoryId: null,
       specificationData: []
   
     }
@@ -105,16 +107,17 @@ class Detail extends Component<IProps, IState> {
 
   // 初始化分类数据
   _initCategory = async(keyword: string) => {
-    const res = await getCategoryList({keyword})
+    const res = await getCategoryList({keyword, pageSize: 999})
     if (res.code === 0) {
       // 获取成功
+      console.log((res.data), '分类')
       this.setState({categoryData: res.data.list})
     }
   }
 
   // 初始化规格数据
   _initSpecification = async(keyword: string) => {
-    specifications({keyword}, (res: any) => {
+    specifications({keyword, pageSize: 999}, (res: any) => {
       this.setState({
         specificationData: res.tableData
       })
@@ -123,6 +126,7 @@ class Detail extends Component<IProps, IState> {
 
   // 分类搜索
   handleSearch = (value: string) => {
+    console.log(value, 'handleSearch')
     this._initCategory(value)
   };
 
@@ -329,6 +333,8 @@ class Detail extends Component<IProps, IState> {
             </Form.Item>
             <Form.Item label="所属分类" className={styles.item}>
               {getFieldDecorator('categoryId', {
+                validateTrigger: ['onSelect'],
+
                 rules: [
                   {
                     required: true,
@@ -339,12 +345,11 @@ class Detail extends Component<IProps, IState> {
                 showSearch
                 allowClear
                 placeholder='请选择所属分类'
-                showArrow={false}
+                showArrow={true}
+                optionFilterProp="children"
                 style={{width: '100%'}}
-                onSearch={(e:string) => this._initCategory(e)}
-                notFoundContent={'没有匹配内容'}
               >
-                {categoryData.map((item: any) => <Select.Option key={item.id}>{item.name}</Select.Option>)}
+                {categoryData.map((item: any) => <Option key={item.id}>{item.name}</Option>)}
               </Select>)}
             </Form.Item>
             <Form.Item label="商品图片" className={styles.pics}>
@@ -439,10 +444,11 @@ class Detail extends Component<IProps, IState> {
                 value={modalForm.specificationId}
                 showSearch
                 allowClear
+                optionFilterProp="children"
                 placeholder='请选择关联规格'
                 showArrow={false}
                 style={{width: '100%'}}
-                onSearch={(e:string) => this._initSpecification(e)}
+                // onSearch={this._initSpecification}
                 notFoundContent={'没有匹配内容'}
                 onChange={(specificationId: number) => this.setState({
                   modalForm: {
