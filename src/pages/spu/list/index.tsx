@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-05 20:46:00
+ * @LastEditTime: 2021-10-09 13:49:15
  */
 
 import { Button, Input, Modal, PageHeader, Table } from 'antd';
@@ -153,13 +153,18 @@ export default class List extends Component<IProps, IState> {
           dataSource={tableData}>
           
             
-          <Column width={'30%'} align='center' title="序号" dataIndex="id" key="id" />
-          <Column width={'30%'} align='center' title="规格名" dataIndex="name" key="name" />
+          <Column align='center' title="序号" dataIndex="id" key="id" />
+          <Column align='center' title="图片" dataIndex="image" key="image" render={(images: any) => (
+            <img style={{width: '50px', height: '50px'}} src={images.fullUrl} />
+          )} />
+
+          <Column align='center' title="规格名" dataIndex="name" key="name" />
+          <Column align='center' title="是否有货"  key="isInventory" render={(status: number) => <span>{status ? '有货' :'无货'}</span>} />
+
   
           <Column
             title="操作"
             key="action"
-            width={'40%'}
             
             align='center'
             render={(record: any) => (
