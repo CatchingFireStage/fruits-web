@@ -3,10 +3,10 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-05 20:46:00
+ * @LastEditTime: 2021-10-09 15:02:03
  */
 
-import { Button, Input, Modal, PageHeader, Table } from 'antd';
+import { Button, Input, Modal, PageHeader, Table, Tag } from 'antd';
 import Column from 'antd/lib/table/Column';
 import { PaginationConfig } from 'antd/lib/pagination';
 
@@ -153,13 +153,22 @@ export default class List extends Component<IProps, IState> {
           dataSource={tableData}>
           
             
-          <Column width={'30%'} align='center' title="序号" dataIndex="id" key="id" />
-          <Column width={'30%'} align='center' title="规格名" dataIndex="name" key="name" />
+          {/* <Column align='center' title="序号" dataIndex="id" key="id" /> */}
+          <Column align='center' title="图片" dataIndex="image" key="image" render={(images: any) => (
+            <img style={{width: '50px', height: '50px'}} src={images.fullUrl} />
+          )} />
+          <Column align='center' title="规格名" dataIndex="name" key="name" />
+
+          <Column align='center' title="所属分类" dataIndex="category" key="category" render={(category: any) => <span>{category.
+          name}</span> } />
+          <Column align='center' title="价格" dataIndex="money" key="money" render={(money: string) => <>{money}元</>} />
+
+          <Column align='center' title="是否有货" dataIndex='isInventory'  key="isInventory" render={(isInventory: number) => <Tag color={isInventory ? '#2db7f5' : '#f50'}>{isInventory ? '有货' :'无货'}</Tag>} />
+
   
           <Column
             title="操作"
             key="action"
-            width={'40%'}
             
             align='center'
             render={(record: any) => (

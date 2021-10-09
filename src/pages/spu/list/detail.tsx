@@ -3,14 +3,14 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-05 20:29:35
+ * @LastEditTime: 2021-10-09 14:57:41
  */
 
 import { Button, Card, Form, Icon, Input, message, Modal, PageHeader, Select, Switch, Table, Upload } from 'antd';
 
 import React, { Component } from 'react'
 import styles from './style.module.less'
-import { addSpecificationSpu, addSpu, delSpecificationSpu, getCategoryList, specifications, spuDetail, updateSpecificationSpu } from '../services';
+import { addSpecificationSpu, addSpu, delSpecificationSpu, getCategoryList, specifications, spuDetail, updateSpecificationSpu, updateSpu } from '../services';
 import { debounce } from 'lodash';
 import Column from 'antd/lib/table/Column';
 import { router } from 'umi';
@@ -47,6 +47,7 @@ function getBase64(file: any) {
     reader.onerror = error => reject(error);
   });
 }
+const { Option } = Select;
 
 class Detail extends Component<IProps, IState> {
   constructor(props: IProps) {
@@ -61,6 +62,7 @@ class Detail extends Component<IProps, IState> {
         required: 1,
         specificationId: undefined,
       },
+      // categoryId: null,
       specificationData: []
   
     }
@@ -98,23 +100,24 @@ class Detail extends Component<IProps, IState> {
         name: detail.name,
         money: detail.money,
         categoryId: '' + detail.category.id,
-        inventory: detail.isInventory ? true: false
+        isInventory: detail.isInventory
       })
     })
   }
 
   // 初始化分类数据
   _initCategory = async(keyword: string) => {
-    const res = await getCategoryList({keyword})
+    const res = await getCategoryList({keyword, pageSize: 999})
     if (res.code === 0) {
       // 获取成功
+      console.log((res.data), '分类')
       this.setState({categoryData: res.data.list})
     }
   }
 
   // 初始化规格数据
   _initSpecification = async(keyword: string) => {
-    specifications({keyword}, (res: any) => {
+    specifications({keyword, pageSize: 999}, (res: any) => {
       this.setState({
         specificationData: res.tableData
       })
@@ -123,6 +126,7 @@ class Detail extends Component<IProps, IState> {
 
   // 分类搜索
   handleSearch = (value: string) => {
+    console.log(value, 'handleSearch')
     this._initCategory(value)
   };
 
@@ -130,21 +134,37 @@ class Detail extends Component<IProps, IState> {
    * @desc 创建/保存
    */
   onSubmit = () => {
+    const {id} = this.props.location.query
     this.props.form.validateFields((err: any, values: any) => {
       if (!err) {
-        const {file, name, money, categoryId, inventory}  = values
+        const {file, name, money, categoryId, isInventory}  = values
         const reqData = new FormData()
         reqData.append('file', file[0].file)
         reqData.append('name', name)
         reqData.append('money', money)
         reqData.append('categoryId', categoryId)
-        reqData.append('inventory', inventory ? '1': '0')
+        reqData.append('isInventory', isInventory ? '1': '0')
 
-        addSpu(reqData)
+        if(id) {
+          // 更新
+          updateSpu({reqData, id}, (res) => {
+            message.success(res.msg, 2)
+            this._initDetail()
+          })
+        } else {
+          // 新增
+          addSpu(reqData, (res) => {
+            message.success(res.msg, 2, () => {
+              router.push('/spu/list')
+            })
+          })
+
+        }
       } else {
         console.log(err)
       }
     });
+    
   }
 
   // 关闭图片预览
@@ -217,7 +237,7 @@ class Detail extends Component<IProps, IState> {
       this.setState({
         modalStatus,
         modalForm: {
-          required: 0,
+          required: 1,
           specificationId: undefined
         }
       })
@@ -231,13 +251,13 @@ class Detail extends Component<IProps, IState> {
   // 修改规格状态
   tableStatusHandle = (info: {
     required: number,
-    id: number
+    specificationSpuId: number
   }) => {
-    const { required, id } = info
+    const { required, specificationSpuId } = info
     Modal.confirm({
       content: `确定要将状态改为${required ? '非必选' : '必选'}嘛？`,
       onOk: () => {
-        updateSpecificationSpu({id, required: required ? 0 : 1}, () => {
+        updateSpecificationSpu({id: specificationSpuId, required: required ? 0 : 1}, () => {
           this._initDetail();
         })
       },
@@ -250,7 +270,7 @@ class Detail extends Component<IProps, IState> {
   // 解除关联
   tableDelHandle = (id: number) => {
     Modal.confirm({
-      content: `确定要解除改关联关系吗？`,
+      content: `确定要解除该关联关系吗？`,
       onOk: () => {
         delSpecificationSpu(id, () => {
           this._initDetail()
@@ -313,6 +333,8 @@ class Detail extends Component<IProps, IState> {
             </Form.Item>
             <Form.Item label="所属分类" className={styles.item}>
               {getFieldDecorator('categoryId', {
+                validateTrigger: ['onSelect'],
+
                 rules: [
                   {
                     required: true,
@@ -323,12 +345,11 @@ class Detail extends Component<IProps, IState> {
                 showSearch
                 allowClear
                 placeholder='请选择所属分类'
-                showArrow={false}
+                showArrow={true}
+                optionFilterProp="children"
                 style={{width: '100%'}}
-                onSearch={(e:string) => this._initCategory(e)}
-                notFoundContent={'没有匹配内容'}
               >
-                {categoryData.map((item: any) => <Select.Option key={item.id}>{item.name}</Select.Option>)}
+                {categoryData.map((item: any) => <Option key={item.id}>{item.name}</Option>)}
               </Select>)}
             </Form.Item>
             <Form.Item label="商品图片" className={styles.pics}>
@@ -360,7 +381,7 @@ class Detail extends Component<IProps, IState> {
               )}
             </Form.Item>
             <Form.Item label="是否有货" className={styles.item}>
-              {getFieldDecorator('inventory', {
+              {getFieldDecorator('isInventory', {
                 valuePropName: 'checked',
                 initialValue: true,
                 rules: [
@@ -402,7 +423,7 @@ class Detail extends Component<IProps, IState> {
               render={(record: any) => (
                 <>
                   <Button size='default' onClick={() => this.tableStatusHandle(record)} type='primary'>修改状态</Button>
-                  <Button size='default' onClick={() => this.tableDelHandle(record.id)} style={{ marginLeft: '10px'}} type='danger'>解除关联</Button>
+                  <Button size='default' onClick={() => this.tableDelHandle(record.specificationSpuId)} style={{ marginLeft: '10px'}} type='danger'>解除关联</Button>
                 </>
               )}
             />
@@ -423,10 +444,11 @@ class Detail extends Component<IProps, IState> {
                 value={modalForm.specificationId}
                 showSearch
                 allowClear
+                optionFilterProp="children"
                 placeholder='请选择关联规格'
                 showArrow={false}
                 style={{width: '100%'}}
-                onSearch={(e:string) => this._initSpecification(e)}
+                // onSearch={this._initSpecification}
                 notFoundContent={'没有匹配内容'}
                 onChange={(specificationId: number) => this.setState({
                   modalForm: {
