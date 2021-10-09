@@ -3,10 +3,10 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-09 13:49:15
+ * @LastEditTime: 2021-10-09 13:52:44
  */
 
-import { Button, Input, Modal, PageHeader, Table } from 'antd';
+import { Button, Input, Modal, PageHeader, Table, Tag } from 'antd';
 import Column from 'antd/lib/table/Column';
 import { PaginationConfig } from 'antd/lib/pagination';
 
@@ -159,7 +159,7 @@ export default class List extends Component<IProps, IState> {
           )} />
 
           <Column align='center' title="规格名" dataIndex="name" key="name" />
-          <Column align='center' title="是否有货"  key="isInventory" render={(status: number) => <span>{status ? '有货' :'无货'}</span>} />
+          <Column align='center' title="是否有货"  key="isInventory" render={(status: number) => <Tag color={status ? '#2db7f5' : '#f50'}>{status ? '有货' :'无货'}</Tag>} />
 
   
           <Column
