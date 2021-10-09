@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-08 17:31:52
+ * @LastEditTime: 2021-10-09 14:57:41
  */
 
 import { Button, Card, Form, Icon, Input, message, Modal, PageHeader, Select, Switch, Table, Upload } from 'antd';
@@ -100,7 +100,7 @@ class Detail extends Component<IProps, IState> {
         name: detail.name,
         money: detail.money,
         categoryId: '' + detail.category.id,
-        isisInventory: detail.isisInventory ? true: false
+        isInventory: detail.isInventory
       })
     })
   }
