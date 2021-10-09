@@ -6,7 +6,8 @@ const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in yo
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
 const { ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION } = process.env;
-const isAntDesignProPreview = ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site';
+const isAntDesignProPreview =
+  ANT_DESIGN_PRO_ONLY_DO_NOT_USE_IN_YOUR_PRODUCTION === 'site';
 const plugins: IPlugin[] = [
   [
     'umi-plugin-react',
@@ -71,7 +72,6 @@ export default {
   },
   // umi routes: https://umijs.org/zh/guide/router.html
   routes: [
-
     // 登录注册
 
     {
@@ -126,20 +126,26 @@ export default {
               name: '规格管理',
               path: '/spu/specification',
               component: './spu/specification',
-            }
+            },
           ],
         },
         {
           path: '/merchant',
           name: '商家管理',
           icon: 'welcome',
-          component:"./Merchant"
+          component: './Merchant',
+        },
+        {
+          path: '/order',
+          name: '订单管理',
+          icon: 'welcome',
+          component: './Order',
         },
         {
           path: '/people',
           name: '用户管理',
           icon: 'welcome',
-          component:"./People"
+          component: './People',
         },
         {
           component: './404',
