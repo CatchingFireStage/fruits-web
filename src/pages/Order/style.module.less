@@ -1,0 +1,35 @@
+.flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.container {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  width: 100%;
+  min-height: 80vh;
+  .doing,
+  .done {
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+    .flex();
+    .title {
+      font-weight: bold;
+      font-size: 24px;
+    }
+    .main {
+      flex: auto;
+      width: 100%;
+      overflow: auto;
+      border: 2px solid green;
+      .item {
+        justify-content: flex-start;
+        width: 100%;
+        .flex();
+      }
+    }
+  }
+}
