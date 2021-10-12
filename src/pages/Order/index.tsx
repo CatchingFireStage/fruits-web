@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-10-09 17:46:07
  * @LastEditros:
- * @LastEditTime: 2021-10-11 17:50:22
+ * @LastEditTime: 2021-10-12 10:19:05
  */
 import { Button } from 'antd';
 import React, { Component } from 'react';
@@ -92,13 +92,42 @@ class Order extends Component<IProps, IState> {
       <div className={styles.container}>
         <div className={styles.doing}>
           <div className={styles.title}>制作中</div>
+          <div className={styles.label}>
+            <span style={{ flexBasis: '20%' }}>订单号</span>
+            <span style={{ flexBasis: '30%' }}>商品</span>
+            <span style={{ flexBasis: '30%' }}>规格值</span>
+            <span style={{ flexBasis: '20%' }}>操作</span>
+          </div>
           <div className={styles.main}>
             {doingList.map((item: any) => (
               <div key={`doing-${item.id}`} className={styles.item}>
-                <div className={styles.money}>
-                  价钱：<span>{item.description.payAmount}</span>{' '}
+                <span className={styles.sort}>{item.id}</span>
+                <div className={styles.box}>
+                  {item.description.orderDescription.map(
+                    (child: any, index: number) => (
+                      <div key={`spu-${index}`} className={styles.spu}>
+                        <div className={styles.name}>{child.spu.name}</div>
+                        <div className={styles.specifition}>
+                          {child.spuSpecificationValue.map(
+                            (spe: any, spe_Index: number) => (
+                              <div
+                                key={`spe-${spe_Index}`}
+                                className={styles.spe_name}
+                              >
+                                {spe.value}
+                              </div>
+                            ),
+                          )}
+                        </div>
+                      </div>
+                    ),
+                  )}
                 </div>
-                <Button>制作完成</Button>
+                <div className={styles.tools}>
+                  <Button size="small" className={styles.button}>
+                    制作完成
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

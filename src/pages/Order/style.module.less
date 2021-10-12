@@ -10,25 +10,77 @@
   grid-template-columns: repeat(2, 1fr);
   width: 100%;
   min-height: 80vh;
+  // place-items: stretch;
   .doing,
   .done {
+    .flex();
     flex-direction: column;
     justify-content: flex-start;
     height: 100%;
-    .flex();
+    border: 2px solid red;
     .title {
       font-weight: bold;
       font-size: 24px;
+    }
+    .label {
+      width: 100%;
+      margin-bottom: 10px;
+      .flex();
+      // background-color: #eee;
+      & > span {
+        flex: auto;
+        text-align: center;
+      }
     }
     .main {
       flex: auto;
       width: 100%;
       overflow: auto;
-      border: 2px solid green;
+      // border: 2px solid green;
       .item {
         justify-content: flex-start;
         width: 100%;
+        padding: 5px 0;
         .flex();
+        &:nth-child(2n) {
+          background-color: #fff;
+        }
+        .sort {
+          flex-basis: 20%;
+          .flex();
+        }
+        .box {
+          flex: auto;
+          .flex();
+          .spu {
+            flex: auto;
+            .flex();
+            .name {
+              .flex();
+              flex-basis: 50%;
+            }
+            .specifition {
+              .flex();
+              flex-basis: 50%;
+              flex-direction: column;
+              .spe_name {
+                padding: 5px 0;
+              }
+              .spe_name + .spe_name {
+                border-top: 1px solid #eee;
+              }
+            }
+          }
+        }
+        .tools {
+          flex-basis: 20%;
+          box-sizing: border-box;
+          padding: 0 20px;
+          .flex();
+          .button {
+            // width: 4;
+          }
+        }
       }
     }
   }
