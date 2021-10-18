@@ -51,10 +51,14 @@
         }
         .box {
           flex: auto;
+          flex-direction: column;
           .flex();
           .spu {
-            flex: auto;
+            width: 100%;
+            border-right: 1px solid #eee;
+            border-left: 1px solid #eee;
             .flex();
+
             .name {
               .flex();
               flex-basis: 50%;
@@ -71,6 +75,9 @@
               }
             }
           }
+          .spu + .spu {
+            border-top: 1px solid #eee;
+          }
         }
         .tools {
           flex-basis: 20%;
@@ -83,5 +90,20 @@
         }
       }
     }
+  }
+}
+
+.history {
+  width: 100%;
+  .header {
+    display: flex;
+    padding: 10px 0;
+    .item {
+      flex-basis: calc(100% / 3);
+    }
+  }
+  .main {
+    margin-top: 20px;
+    background-color: #fff;
   }
 }
