@@ -98,13 +98,36 @@ export default {
         {
           path: '/welcome',
           name: '欢迎页面',
-          icon: 'welcome',
+          icon: 'icon-huanyingye',
           component: './Welcome',
+        },
+        {
+          path: '/order',
+          name: '订单管理',
+          icon: 'icon-quanbudingdan',
+          routes: [
+            {
+              name: '制作中订单',
+              path: '/order/index',
+              component: './Order/index',
+            },
+            {
+              name: '历史订单',
+              path: '/order/history',
+              component: './Order/history',
+            },
+          ],
+        },
+        {
+          path: '/people',
+          name: '用户管理',
+          icon: 'icon-yonghu',
+          component: './People',
         },
         {
           path: '/spu',
           name: 'SPU管理',
-          icon: 'welcome',
+          icon: 'icon-SPUguanli',
           routes: [
             {
               name: '商品管理',
@@ -132,20 +155,8 @@ export default {
         {
           path: '/merchant',
           name: '商家管理',
-          icon: 'welcome',
+          icon: 'icon-shangjialiebiaoicon',
           component: './Merchant',
-        },
-        {
-          path: '/order',
-          name: '订单管理',
-          icon: 'welcome',
-          component: './Order',
-        },
-        {
-          path: '/people',
-          name: '用户管理',
-          icon: 'welcome',
-          component: './People',
         },
         {
           component: './404',
