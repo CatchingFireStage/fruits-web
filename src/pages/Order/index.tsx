@@ -3,12 +3,18 @@
  * @Author: LaughingZhu
  * @Date: 2021-10-09 17:46:07
  * @LastEditros:
- * @LastEditTime: 2021-10-19 09:57:27
+ * @LastEditTime: 2021-10-19 16:46:24
  */
 import { Button } from 'antd';
 import React, { Component } from 'react';
 import { orderDelivery, orderFulfill } from './service';
 import styles from './style.module.less';
+
+const wsOrderServe = `ws:${
+  process.env.NODE_ENV === 'development'
+    ? '//106.12.76.73:8081'
+    : '//api.catchingfire.top'
+}/admin/order/orderWs`;
 interface IProps {}
 interface IState {
   socket: any;
@@ -36,7 +42,7 @@ class Order extends Component<IProps, IState> {
   };
 
   _initSocketConnection = () => {
-    const socket = new WebSocket('ws://106.12.76.73:8081/admin/order/orderWs', [
+    const socket = new WebSocket(wsOrderServe, [
       localStorage.getItem('fruit_token') || '',
     ]);
 
@@ -123,7 +129,6 @@ class Order extends Component<IProps, IState> {
 
   render() {
     const { doingList, doneList, makedList, finishList } = this.state;
-    console.log(doneList, makedList, 'reander');
     const renderDodingList = doingList.filter((item: any) => {
       return !makedList.includes(item.id);
     });
@@ -134,12 +139,6 @@ class Order extends Component<IProps, IState> {
       <div className={styles.container}>
         <div className={styles.doing}>
           <div className={styles.title}>制作中</div>
-          {/* <div className={styles.label}>
-            <span style={{ flexBasis: '20%' }}>订单号</span>
-            <span style={{ flexBasis: '30%' }}>商品</span>
-            <span style={{ flexBasis: '30%' }}>规格值</span>
-            <span style={{ flexBasis: '20%' }}>操作</span>
-          </div> */}
           <div className={styles.main}>
             {renderDodingList.map((item: any) => (
               <div key={`doing-${item.id}`} className={styles.item}>
