@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2021-10-19 09:50:55
+ * @LastEditTime: 2021-10-19 09:55:41
  */
 
 import { Button, Divider, PageHeader, Select, Table } from 'antd';
@@ -115,6 +115,7 @@ export default class OrderList extends Component<IProps, IState> {
     const header = (
       <div className={styles.header}>
         <div className={styles.item}>
+          <p>状态： </p>
           <Select
             placeholder="请选择筛选类型"
             showArrow={true}
