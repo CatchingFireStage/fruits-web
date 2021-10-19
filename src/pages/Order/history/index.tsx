@@ -3,10 +3,10 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2021-10-18 17:55:16
+ * @LastEditTime: 2021-10-19 09:19:55
  */
 
-import { Divider, PageHeader, Table } from 'antd';
+import { Button, Divider, PageHeader, Select, Table } from 'antd';
 import Column from 'antd/lib/table/Column';
 import { PaginationConfig } from 'antd/lib/pagination';
 
@@ -16,7 +16,7 @@ import { orderHistoty } from '../service';
 
 interface IProps {}
 interface IState {
-  keyword: string;
+  status: string;
   tableData: any;
   pageInfo: {
     p: number;
@@ -29,7 +29,7 @@ export default class OrderList extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      keyword: '',
+      status: '',
       tableData: [],
       pageInfo: {
         p: 1,
@@ -44,9 +44,9 @@ export default class OrderList extends Component<IProps, IState> {
   };
 
   _getList = (search?: string) => {
-    const { keyword, pageInfo } = this.state;
+    const { status, pageInfo } = this.state;
     const params = {
-      keyword: search !== undefined ? search : keyword,
+      state: search !== undefined ? search : status,
       ...pageInfo,
     };
 
@@ -79,9 +79,34 @@ export default class OrderList extends Component<IProps, IState> {
     );
   };
 
-  render() {
-    const { pageInfo, tableData } = this.state;
+  searchHandle = (status: string) => {
+    console.log(typeof status);
+    this.setState({ status }, () => {
+      this._getList(status);
+    });
+  };
 
+  render() {
+    const { pageInfo, tableData, status } = this.state;
+
+    // 搜索框内容
+    const header = (
+      <div className={styles.header}>
+        <div className={styles.item}>
+          <Select
+            placeholder="请选择筛选类型"
+            showArrow={true}
+            style={{ width: '100%' }}
+            value={status}
+            onSelect={(e: string) => this.searchHandle(e)}
+          >
+            <Select.Option key={0}>下单</Select.Option>
+            <Select.Option key={1}>已支付</Select.Option>
+            <Select.Option key={2}>订单关闭</Select.Option>
+          </Select>
+        </div>
+      </div>
+    );
     // 分页配置
     const paginationConfig: PaginationConfig = {
       total: pageInfo.total,
@@ -98,8 +123,8 @@ export default class OrderList extends Component<IProps, IState> {
 
     return (
       <div className={styles.history}>
-        <PageHeader ghost={false} title="历史订单" extra={[]}>
-          {}
+        <PageHeader ghost={false} title="历史订单">
+          {header}
         </PageHeader>
 
         <Table
@@ -149,6 +174,21 @@ export default class OrderList extends Component<IProps, IState> {
                 </Fragment>
               ));
             }}
+          />
+          <Column
+            align="center"
+            title="金额"
+            dataIndex="payMoney"
+            key="payMoney"
+          />
+          <Column
+            align="center"
+            title="状态"
+            dataIndex="state"
+            key="state"
+            render={(state: number) =>
+              state == 0 ? '下单' : state == 1 ? '已支付' : '订单关闭'
+            }
           />
         </Table>
       </div>
