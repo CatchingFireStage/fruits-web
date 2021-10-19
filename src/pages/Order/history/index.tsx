@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2021-10-19 09:19:55
+ * @LastEditTime: 2021-10-19 09:50:55
  */
 
 import { Button, Divider, PageHeader, Select, Table } from 'antd';
@@ -16,7 +16,7 @@ import { orderHistoty } from '../service';
 
 interface IProps {}
 interface IState {
-  status: string;
+  status: number | undefined;
   tableData: any;
   pageInfo: {
     p: number;
@@ -24,12 +24,34 @@ interface IState {
     total: number | undefined;
   };
 }
+const statusArr = [
+  {
+    value: 0,
+    label: '下单',
+  },
+  {
+    value: 1,
+    label: '已支付',
+  },
+  {
+    value: 2,
+    label: '订单关闭',
+  },
+  {
+    value: 3,
+    label: '完成制作',
+  },
+  {
+    value: 4,
+    label: '已取餐',
+  },
+];
 
 export default class OrderList extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      status: '',
+      status: undefined,
       tableData: [],
       pageInfo: {
         p: 1,
@@ -79,9 +101,9 @@ export default class OrderList extends Component<IProps, IState> {
     );
   };
 
-  searchHandle = (status: string) => {
+  searchHandle = (status: number) => {
     console.log(typeof status);
-    this.setState({ status }, () => {
+    this.setState({ status: Number(status) }, () => {
       this._getList(status);
     });
   };
@@ -98,11 +120,23 @@ export default class OrderList extends Component<IProps, IState> {
             showArrow={true}
             style={{ width: '100%' }}
             value={status}
-            onSelect={(e: string) => this.searchHandle(e)}
+            onSelect={(e: number) => this.searchHandle(e)}
           >
-            <Select.Option key={0}>下单</Select.Option>
-            <Select.Option key={1}>已支付</Select.Option>
-            <Select.Option key={2}>订单关闭</Select.Option>
+            <Select.Option value={0} key={0}>
+              下单
+            </Select.Option>
+            <Select.Option value={1} key={1}>
+              已支付
+            </Select.Option>
+            <Select.Option value={2} key={2}>
+              订单关闭
+            </Select.Option>
+            <Select.Option value={3} key={3}>
+              完成制作
+            </Select.Option>
+            <Select.Option value={4} key={4}>
+              已取餐
+            </Select.Option>
           </Select>
         </div>
       </div>
@@ -186,9 +220,10 @@ export default class OrderList extends Component<IProps, IState> {
             title="状态"
             dataIndex="state"
             key="state"
-            render={(state: number) =>
-              state == 0 ? '下单' : state == 1 ? '已支付' : '订单关闭'
-            }
+            render={(state: number) => {
+              const result = statusArr.find((item) => item.value === state);
+              return result?.label;
+            }}
           />
         </Table>
       </div>
