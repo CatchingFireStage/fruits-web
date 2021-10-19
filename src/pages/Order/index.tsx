@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-10-09 17:46:07
  * @LastEditros:
- * @LastEditTime: 2021-10-19 09:09:55
+ * @LastEditTime: 2021-10-19 09:57:27
  */
 import { Button } from 'antd';
 import React, { Component } from 'react';
@@ -133,7 +133,7 @@ class Order extends Component<IProps, IState> {
     return (
       <div className={styles.container}>
         <div className={styles.doing}>
-          <div className={styles.title}>订单表</div>
+          <div className={styles.title}>制作中</div>
           {/* <div className={styles.label}>
             <span style={{ flexBasis: '20%' }}>订单号</span>
             <span style={{ flexBasis: '30%' }}>商品</span>
@@ -179,7 +179,7 @@ class Order extends Component<IProps, IState> {
           </div>
         </div>
         <div className={styles.done}>
-          <div className={styles.title}>制作中</div>
+          <div className={styles.title}>制作完成</div>
           <div className={styles.main}>
             {renderDoneList.map((item: any) => (
               <div key={`doing-${item.id}`} className={styles.item}>
