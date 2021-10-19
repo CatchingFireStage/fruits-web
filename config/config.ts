@@ -224,6 +224,6 @@ export default {
   },
   history: 'hash',
   treeShaking: true,
-  publicPath: '/bigAdmin/',
+  publicPath: '/fruit_admin/',
   base: process.env.NODE_ENV === 'production' ? '/' : '/',
 } as IConfig;
