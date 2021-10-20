@@ -3,7 +3,7 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
- import { CheckCircleOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined } from '@ant-design/icons';
 
 import ProLayout, {
   MenuDataItem,
@@ -16,12 +16,11 @@ import React, { useEffect } from 'react';
 import { Link, router } from 'umi';
 import { Dispatch } from 'redux';
 import { connect } from 'dva';
-import {  Result, Button, message } from 'antd';
+import { Result, Button, message, Icon } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
-
 
 const noMatch = (
   <Result
@@ -36,6 +35,10 @@ const noMatch = (
   />
 );
 
+const MyIcon = Icon.createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_2875298_9jv47h05imq.js', // 在 iconfont.cn 上生成
+});
+
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
@@ -43,10 +46,10 @@ export interface BasicLayoutProps extends ProLayoutProps {
   route: ProLayoutProps['route'] & {
     authority: string[];
   };
-  
+
   settings: Settings;
-  loading:any;
-  local: 'zh-CN',
+  loading: any;
+  local: 'zh-CN';
   dispatch: Dispatch;
 }
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
@@ -62,11 +65,10 @@ const menuDataRender = (menuList: any): any[] =>
   // console.log(menuDataRender)
 
   menuList.map((item: any) => {
-
     const localItem = {
       ...item,
-      icon: item.icon && IconMap[item.icon as string],
-      // icon: item.icon,
+      // icon: item.icon && IconMap[item.icon as string],
+      icon: item.icon && <MyIcon type={item.icon} />,
       name: item.name,
       path: item.path,
       children: item.children ? menuDataRender(item.children) : [],
@@ -75,10 +77,7 @@ const menuDataRender = (menuList: any): any[] =>
   });
 
 const defaultFooterDom = (
-  <DefaultFooter
-    copyright="2021 LaughingZhu Publish"
-    links={[]}
-  />
+  <DefaultFooter copyright="2021 LaughingZhu Publish" links={[]} />
 );
 
 const footerRender: BasicLayoutProps['footerRender'] = () => {
@@ -94,7 +93,11 @@ const footerRender: BasicLayoutProps['footerRender'] = () => {
           textAlign: 'center',
         }}
       >
-        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://www.netlify.com"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <img
             src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
             width="82px"
@@ -106,19 +109,19 @@ const footerRender: BasicLayoutProps['footerRender'] = () => {
   );
 };
 
-const BasicLayout: React.FC<BasicLayoutProps> = props => {
+const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   const { dispatch, children, settings, location = { pathname: '/' } } = props;
   /**
    * constructor
    */
   useEffect(() => {
-    const token = localStorage.getItem('fruit_token')
-    if(token === undefined || token === null ||  token === '') {
+    const token = localStorage.getItem('fruit_token');
+    if (token === undefined || token === null || token === '') {
       message.warning('您还未登录', 2, () => {
-        router.replace('/user/login')
-      } )
+        router.replace('/user/login');
+      });
     }
-  }, [props])
+  }, [props]);
 
   const handleMenuCollapse = (payload: boolean): void => {
     if (dispatch) {
@@ -129,16 +132,20 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
     }
   };
   // get children authority
-  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
+  const authorized = getAuthorityFromRouter(
+    props.route.routes,
+    location.pathname || '/',
+  ) || {
     authority: undefined,
   };
-
 
   return (
     <>
       <ProLayout
-        locale='zh-CN'
-        logo={'https://sckc-1256037416.cos.ap-beijing.myqcloud.com/next-admin/logo.jpg'}
+        locale="zh-CN"
+        logo={
+          'https://sckc-1256037416.cos.ap-beijing.myqcloud.com/next-admin/logo.jpg'
+        }
         menuHeaderRender={(logoDom, titleDom) => (
           <Link to="/">
             {logoDom}
@@ -147,17 +154,16 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         )}
         onCollapse={handleMenuCollapse}
         menuItemRender={(menuItemProps: any, defaultDom) => {
-            // if (menuItemProps.isUrl) {
-            //   return defaultDom;
-            // }
-            return <Link to={menuItemProps.path}>{defaultDom}</Link>;
-          }
-        }
+          // if (menuItemProps.isUrl) {
+          //   return defaultDom;
+          // }
+          return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+        }}
         breadcrumbRender={(routers = []) => {
           return [
             {
               path: '/',
-              breadcrumbName: '首页'
+              breadcrumbName: '首页',
             },
             ...routers,
           ];
@@ -182,5 +188,5 @@ export default connect(({ global, settings }: ConnectState) => ({
 }))(BasicLayout);
 
 const IconMap = {
-  'welcome': <CheckCircleOutlined />
-}
+  welcome: <CheckCircleOutlined />,
+};
