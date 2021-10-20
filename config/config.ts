@@ -153,10 +153,20 @@ export default {
           ],
         },
         {
-          path: '/merchant',
           name: '商家管理',
           icon: 'icon-shangjialiebiaoicon',
-          component: './Merchant',
+          routes: [
+            {
+              name: '商品信息',
+              path: '/merchant',
+              component: './Merchant',
+            },
+            {
+              name: '生成桌码',
+              path: '/merchant/qrcode',
+              component: './Merchant/qrcode',
+            },
+          ],
         },
         {
           component: './404',
