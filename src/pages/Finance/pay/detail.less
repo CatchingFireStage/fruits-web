@@ -1,0 +1,82 @@
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.detail {
+  width: 100%;
+  .top {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    .flex();
+    .top_item {
+      .flex();
+      .top_label {
+        width: 150px;
+      }
+      .top_value {
+        .list {
+          border: 1px solid #666;
+          .list_item {
+            .flex();
+            justify-content: flex-start;
+            padding: 2px;
+            font-size: 16px;
+            &:first-child {
+              .list_name {
+                font-weight: bold;
+                font-size: 24px;
+              }
+              .list_money {
+                font-weight: bold;
+                font-size: 24px;
+              }
+            }
+            .list_name {
+              .flex();
+              width: 200px;
+              border-right: 1px solid #666;
+            }
+            .list_money {
+              width: 100px;
+              .flex();
+            }
+          }
+          .list_item + .list_item {
+            border-top: 1px solid #666;
+          }
+        }
+      }
+    }
+    .top_item + .top_item {
+      margin-top: 10px;
+    }
+  }
+
+  .main {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 30px;
+    background-color: #fff;
+    .left {
+      .flex();
+      .input {
+        width: 300px;
+        margin-right: 20px;
+      }
+    }
+    .right {
+      .flex();
+      flex-direction: column;
+      .qrcode {
+        width: 300px;
+        height: 300px;
+        margin: 20px 0;
+        // border: 2px solid red;
+      }
+    }
+  }
+}
