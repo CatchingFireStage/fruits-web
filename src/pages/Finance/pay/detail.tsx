@@ -3,13 +3,21 @@
  * @Author: LaughingZhu
  * @Date: 2021-12-08 10:43:12
  * @LastEditros:
- * @LastEditTime: 2021-12-09 16:16:01
+ * @LastEditTime: 2021-12-09 17:29:12
  */
 import React from 'react';
 import styles from './detail.less';
 import { useEffect, useState } from 'react';
-import { detail } from '../services';
-import { Button, PageHeader, Table } from 'antd';
+import { detail, refundById } from '../services';
+import {
+  Button,
+  Input,
+  InputNumber,
+  message,
+  Modal,
+  PageHeader,
+  Table,
+} from 'antd';
 import { stateArr } from '../config';
 import Column from 'antd/lib/table/Column';
 
@@ -19,7 +27,11 @@ interface IProps {
 function Detail(props: IProps) {
   const { id } = props.location.query;
   const [info, setInfo] = useState({});
-
+  const [visible, setVisible] = useState(true);
+  const [refund, setRefund] = useState({
+    amount: 0,
+    reason: '',
+  });
   useEffect(() => {
     if (id) {
       _getDetail();
@@ -33,7 +45,29 @@ function Detail(props: IProps) {
     }
   };
 
-  console.log(info);
+  const handleModal = (visible: boolean) => {
+    if (visible) {
+      setVisible(true);
+    } else {
+      setVisible(false);
+    }
+  };
+
+  const refundSubmit = async () => {
+    if (refund.reason === '') {
+      message.error('退款原因不能为空', 2);
+      return false;
+    }
+    const res = await refundById({ payId: id, ...refund });
+    if (res.code === 0) {
+      message.success(res.msg, 2, () => {
+        handleModal(false);
+        _getDetail();
+      });
+    } else {
+      message.error(res.msg, 2);
+    }
+  };
   return (
     <div className={styles.detail}>
       <PageHeader
@@ -43,7 +77,7 @@ function Detail(props: IProps) {
           <Button key="1" type="ghost">
             返回
           </Button>,
-          <Button key="2" type="primary">
+          <Button onClick={() => setVisible(true)} key="2" type="primary">
             手动退款
           </Button>,
         ]}
@@ -174,6 +208,32 @@ function Detail(props: IProps) {
           render={(text) => stateArr.find((item) => item.value === text)?.label}
         />
       </Table>
+
+      <Modal
+        title="退款申请"
+        visible={visible}
+        onOk={refundSubmit}
+        onCancel={() => handleModal(false)}
+      >
+        <p>退款Id：{id}</p>
+        <div>
+          退款金额：
+          <InputNumber
+            defaultValue={0}
+            onChange={(e: number) => setRefund({ ...refund, amount: e })}
+          />
+        </div>
+        <div>
+          退款原因：
+          <Input.TextArea
+            defaultValue={0}
+            style={{ marginTop: '10px' }}
+            onChange={(e: any) =>
+              setRefund({ ...refund, reason: e.target.value })
+            }
+          />
+        </div>
+      </Modal>
     </div>
   );
 }

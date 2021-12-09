@@ -1,9 +1,9 @@
 /*
- * @Description: 
+ * @Description:
  * @Author: LaughingZhu
  * @Date: 2021-06-21 10:15:17
- * @LastEditros: 
- * @LastEditTime: 2021-08-28 09:00:37
+ * @LastEditros:
+ * @LastEditTime: 2021-12-09 17:25:21
  */
 /**
  * request 网络请求工具
@@ -19,7 +19,6 @@ import router from 'umi/router';
 const errorHandler = (error: any) => {
   const { response, data } = error;
   if (response && response.status) {
-
     notification.error({
       message: `请求错误`,
       description: data.message,
@@ -42,23 +41,20 @@ const request = extend({
 });
 
 request.interceptors.request.use((url, options: any) => {
-
   options.headers = {
     'access-token-admin': localStorage.getItem('fruit_token'),
-  }
-  return (
-    {
-      url,
-      options: { ...options },
-    }
-  );
+  };
+  return {
+    url,
+    options: { ...options },
+  };
 });
 
 request.interceptors.response.use((response: any) => {
   const { status } = response;
   if (status === 403) {
     // 没有权限
-    router.replace('/404')
+    router.replace('/404');
     // @HACK
     /* eslint-disable no-underscore-dangle */
     return;
@@ -69,7 +65,6 @@ request.interceptors.response.use((response: any) => {
     /* eslint-disable no-underscore-dangle */
     return;
   }
-  
 
   return response;
 });
