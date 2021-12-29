@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros: 
- * @LastEditTime: 2021-10-09 15:02:03
+ * @LastEditTime: 2021-12-29 16:16:00
  */
 
 import { Button, Input, Modal, PageHeader, Table, Tag } from 'antd';
@@ -114,7 +114,7 @@ export default class List extends Component<IProps, IState> {
     const header = (
       <div className={styles.header}>
         <div className={styles.item}>
-          <Input size='large' onChange={(e) => this.setState({keyword: e.target.value})} placeholder="请输入分类名称" />
+          <Input size='large' onChange={(e) => this.setState({keyword: e.target.value})} placeholder="请输入商品名称" />
         </div>
       </div>
     )
@@ -157,7 +157,7 @@ export default class List extends Component<IProps, IState> {
           <Column align='center' title="图片" dataIndex="image" key="image" render={(images: any) => (
             <img style={{width: '50px', height: '50px'}} src={images.fullUrl} />
           )} />
-          <Column align='center' title="规格名" dataIndex="name" key="name" />
+          <Column align='center' title="商品名" dataIndex="name" key="name" />
 
           <Column align='center' title="所属分类" dataIndex="category" key="category" render={(category: any) => <span>{category.
           name}</span> } />

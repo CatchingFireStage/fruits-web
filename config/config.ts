@@ -102,6 +102,29 @@ export default {
           component: './Welcome',
         },
         {
+          name: '财务管理',
+          icon: 'icon-shangjialiebiaoicon',
+          path: '/finance',
+          routes: [
+            {
+              name: '支付列表',
+              path: '/finance/pay',
+              component: './Finance/pay',
+            },
+            {
+              name: '订单详情',
+              hideInMenu: true,
+              path: '/finance/pay/detail',
+              component: './Finance/pay/detail',
+            },
+            {
+              name: '退款列表',
+              path: '/finance/refund',
+              component: './Finance/refund',
+            },
+          ],
+        },
+        {
           path: '/order',
           name: '订单管理',
           icon: 'icon-quanbudingdan',
@@ -168,6 +191,7 @@ export default {
             },
           ],
         },
+
         {
           component: './404',
         },
@@ -224,7 +248,7 @@ export default {
   // chainWebpack: webpackPlugin,
   proxy: {
     '/admin/': {
-      target: 'http://106.12.76.73:8081/admin',
+      target: 'https://api.catchingfire.top/admin',
       changeOrigin: true,
       secure: false,
       pathRewrite: {
