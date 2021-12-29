@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-06-21 10:15:17
  * @LastEditros:
- * @LastEditTime: 2021-12-09 17:25:21
+ * @LastEditTime: 2021-12-29 10:29:42
  */
 /**
  * request 网络请求工具
@@ -60,7 +60,7 @@ request.interceptors.response.use((response: any) => {
     return;
   }
   if (status === 401) {
-    window.location.replace('/login');
+    router.replace('/user/login')
     // @HACK
     /* eslint-disable no-underscore-dangle */
     return;
