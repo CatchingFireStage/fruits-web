@@ -1,9 +1,9 @@
 /*
- * @Description: spu列表页
+ * @Description: 支付列表
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2021-12-09 09:53:56
+ * @LastEditTime: 2021-12-29 10:53:55
  */
 
 import { Button, Input, Modal, PageHeader, Table, Tag } from 'antd';
@@ -150,10 +150,7 @@ export default class Pay extends Component<IProps, IState> {
           ghost={false}
           title="支付列表"
           extra={[
-            <Button key="3" type="ghost">
-              重置
-            </Button>,
-            <Button key="2" type="ghost">
+            <Button key="2" type="ghost" onClick={() => this._getList()}>
               查询
             </Button>,
             <Button

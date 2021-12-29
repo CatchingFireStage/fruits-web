@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-12-08 10:43:12
  * @LastEditros:
- * @LastEditTime: 2021-12-09 17:29:12
+ * @LastEditTime: 2021-12-29 10:21:45
  */
 import React from 'react';
 import styles from './detail.less';
@@ -26,8 +26,19 @@ interface IProps {
 }
 function Detail(props: IProps) {
   const { id } = props.location.query;
-  const [info, setInfo] = useState({});
-  const [visible, setVisible] = useState(true);
+  const [info, setInfo] = useState({
+    merchantTransactionObject: undefined,
+    merchantTransactionType: undefined,
+    merchantTransactionId: undefined,
+    outTradeNo: '',
+    transactionId: 0,
+    createTime: '',
+    amount: '',
+    refundAmount: '',
+    state: '',
+    refund: []
+  });
+  const [visible, setVisible] = useState(false);
   const [refund, setRefund] = useState({
     amount: 0,
     reason: '',
@@ -150,7 +161,7 @@ function Detail(props: IProps) {
                           {item.spu.money}
                         </div>
                       </div>
-                      {item.spuSpecificationValue.map((child) => (
+                      {item.spuSpecificationValue.map((child: any) => (
                         <div
                           className={styles.list_item}
                           key={'child-' + child.name}
@@ -220,7 +231,7 @@ function Detail(props: IProps) {
           退款金额：
           <InputNumber
             defaultValue={0}
-            onChange={(e: number) => setRefund({ ...refund, amount: e })}
+            onChange={(e: any) => setRefund({ ...refund, amount: e })}
           />
         </div>
         <div>
