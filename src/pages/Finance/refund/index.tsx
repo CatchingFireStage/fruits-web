@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2021-12-29 10:54:28
+ * @LastEditTime: 2021-12-29 15:28:26
  */
 
 import { Button, Input, message, Modal, PageHeader, Popconfirm, Table, Tag } from 'antd';
@@ -45,25 +45,34 @@ export default class Refund extends Component<IProps, IState> {
     this._getList();
   };
 
-  _getList = async (search?: string) => {
+  _getList = async () => {
     const { keyword, pageInfo } = this.state;
     const params = {
-      keyword: search !== undefined ? search : keyword,
+      keyword,
       ...pageInfo,
     };
-
     const res = await refundList(params);
     if (res.code === 0) {
       this.setState({
         tableData: res.data.list,
         pageInfo: {
           ...pageInfo,
-          p: res.data.pages,
           total: res.data.total,
         },
       });
     }
   };
+
+  onSearch = () => {
+    this.setState({
+      pageInfo: {
+        ...this.state.pageInfo,
+        p: 1
+      }
+    }, () => {
+      this._getList()
+    })
+  }
 
   // 分页配置 处理函数
   painationHandle = (current_page: number, pageSize?: number) => {
@@ -103,7 +112,7 @@ export default class Refund extends Component<IProps, IState> {
           <Input
             size="large"
             onChange={(e) => this.setState({ keyword: e.target.value })}
-            placeholder="请输入分类名称"
+            placeholder="支付ID"
           />
         </div>
       </div>
@@ -129,7 +138,7 @@ export default class Refund extends Component<IProps, IState> {
           ghost={false}
           title="退款列表"
           extra={[
-            <Button key="2" type="ghost" onClick={() => this._getList()}>
+            <Button key="2" type="ghost" onClick={() => this.onSearch()}>
               查询
             </Button>,
             <Button
@@ -152,6 +161,10 @@ export default class Refund extends Component<IProps, IState> {
         >
           {/* <Column align='center' title="序号" dataIndex="id" key="id" /> */}
           <Column align="center" title="ID" dataIndex="id" key="id" />
+          <Column align="center" title="支付ID" dataIndex="payId" key="payId" />
+          <Column align="center" title="微信支付退款单号" dataIndex="refundId" key="refundId" />
+          <Column align="center" title="商户系统退款订单号" dataIndex="outRefundNo" key="outRefundNo" />
+
           <Column align="center" title="价格" dataIndex="amount" key="amount" />
 
           <Column
@@ -163,6 +176,8 @@ export default class Refund extends Component<IProps, IState> {
               refundState.find((item) => item.value === text)?.label
             }
           />
+          <Column align="center" title="退款原因" dataIndex="reason" key="reason" />
+
           <Column
             align="center"
             title="时间"
@@ -174,6 +189,7 @@ export default class Refund extends Component<IProps, IState> {
             title="操作"
             key="action"
             align="center"
+            fixed='right'
             render={(record: any) => (
               record.state === 'ABNORMAL' ?
                 <Popconfirm

@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2021-12-29 10:53:55
+ * @LastEditTime: 2021-12-29 15:27:15
  */
 
 import { Button, Input, Modal, PageHeader, Table, Tag } from 'antd';
@@ -43,13 +43,12 @@ export default class Pay extends Component<IProps, IState> {
 
   componentDidMount = () => {
     this._getList();
-    this._getDetail();
   };
 
-  _getList = async (search?: string) => {
+  _getList = async () => {
     const { keyword, pageInfo } = this.state;
     const params = {
-      keyword: search !== undefined ? search : keyword,
+      keyword,
       ...pageInfo,
     };
 
@@ -59,14 +58,10 @@ export default class Pay extends Component<IProps, IState> {
         tableData: res.data.list,
         pageInfo: {
           ...pageInfo,
-          p: res.data.pages,
           total: res.data.total,
         },
       });
     }
-  };
-  _getDetail = async () => {
-    const res = await detail(1);
   };
 
   // 分页配置 处理函数
@@ -100,19 +95,16 @@ export default class Pay extends Component<IProps, IState> {
     return true;
   };
 
-  delSpu = (id: number) => {
-    Modal.confirm({
-      content: `确定要删除该spu记录吗？`,
-      onOk: () => {
-        delSpu(id, () => {
-          this._getList();
-        });
-      },
-      onCancel() {
-        return false;
-      },
-    });
-  };
+  onSearch = () => {
+    this.setState({
+      pageInfo: {
+        ...this.state.pageInfo,
+        p: 1
+      }
+    }, () => {
+      this._getList()
+    })
+  }
 
   render() {
     const { pageInfo, tableData } = this.state;
@@ -124,7 +116,7 @@ export default class Pay extends Component<IProps, IState> {
           <Input
             size="large"
             onChange={(e) => this.setState({ keyword: e.target.value })}
-            placeholder="请输入分类名称"
+            placeholder="商户系统订单号"
           />
         </div>
       </div>
@@ -150,7 +142,7 @@ export default class Pay extends Component<IProps, IState> {
           ghost={false}
           title="支付列表"
           extra={[
-            <Button key="2" type="ghost" onClick={() => this._getList()}>
+            <Button key="2" type="ghost" onClick={() => this.onSearch()}>
               查询
             </Button>,
             <Button
@@ -173,6 +165,8 @@ export default class Pay extends Component<IProps, IState> {
         >
           {/* <Column align='center' title="序号" dataIndex="id" key="id" /> */}
           <Column align="center" title="ID" dataIndex="id" key="id" />
+          <Column align="center" title="微信支付单号" dataIndex="transactionId" key="transactionId" />
+          <Column align="center" title="商户系统订单号" dataIndex="outTradeNo" key="outTradeNo" />
           <Column align="center" title="价格" dataIndex="amount" key="amount" />
 
           <Column
@@ -203,13 +197,6 @@ export default class Pay extends Component<IProps, IState> {
                   style={{ marginLeft: 20 }}
                 >
                   详情
-                </Button>
-                <Button
-                  onClick={() => this.delSpu(record.id)}
-                  type="danger"
-                  style={{ marginLeft: 20 }}
-                >
-                  删除
                 </Button>
               </>
             )}
