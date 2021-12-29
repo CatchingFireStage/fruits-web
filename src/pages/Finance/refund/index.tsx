@@ -1,19 +1,19 @@
 /*
- * @Description: spu列表页
+ * @Description: 退款列表
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2021-12-08 09:45:33
+ * @LastEditTime: 2021-12-29 10:54:28
  */
 
-import { Button, Input, Modal, PageHeader, Table, Tag } from 'antd';
+import { Button, Input, message, Modal, PageHeader, Popconfirm, Table, Tag } from 'antd';
 import Column from 'antd/lib/table/Column';
 import { PaginationConfig } from 'antd/lib/pagination';
 
 import React, { Component } from 'react';
 import styles from '../../spu/category/style.less';
-import { refundList } from '../services';
-import { stateArr } from '../config';
+import { refundList, reiterateRefund } from '../services';
+import { refundState } from '../config';
 import router from 'umi/router';
 
 interface IProps {}
@@ -27,7 +27,7 @@ interface IState {
   };
 }
 
-export default class Pay extends Component<IProps, IState> {
+export default class Refund extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -83,31 +83,14 @@ export default class Pay extends Component<IProps, IState> {
     );
   };
 
-  // 查看详情
-  onDetail = (id: number) => {
-    if (!id) return false;
-
-    router.push({
-      pathname: '/spu/list/detail',
-      query: {
-        id,
-      },
-    });
-    return true;
-  };
-
-  delSpu = (id: number) => {
-    Modal.confirm({
-      content: `确定要删除该spu记录吗？`,
-      onOk: () => {
-        // delSpu(id, () => {
-        //   this._getList()
-        // })
-      },
-      onCancel() {
-        return false;
-      },
-    });
+  // 重新退款
+  onRefund = async(id: number) => {
+    const res = await reiterateRefund​(id)
+    if(res.code === 0) {
+      message.success(res.msg, 2, () => this._getList())
+    } else {
+      message.error(res.msg, 2)
+    }
   };
 
   render() {
@@ -146,10 +129,7 @@ export default class Pay extends Component<IProps, IState> {
           ghost={false}
           title="退款列表"
           extra={[
-            <Button key="3" type="ghost">
-              重置
-            </Button>,
-            <Button key="2" type="ghost">
+            <Button key="2" type="ghost" onClick={() => this._getList()}>
               查询
             </Button>,
             <Button
@@ -180,7 +160,7 @@ export default class Pay extends Component<IProps, IState> {
             dataIndex="state"
             key="state"
             render={(text) =>
-              stateArr.find((item) => item.value === text)?.label
+              refundState.find((item) => item.value === text)?.label
             }
           />
           <Column
@@ -195,22 +175,22 @@ export default class Pay extends Component<IProps, IState> {
             key="action"
             align="center"
             render={(record: any) => (
-              <>
-                <Button
-                  onClick={() => this.onDetail(record.id)}
-                  type="default"
-                  style={{ marginLeft: 20 }}
+              record.state === 'ABNORMAL' ?
+                <Popconfirm
+                  title="确定要对此订单退款吗？"
+                  onConfirm={() => this.onRefund(record.id)}
+                  okText="退款"
+                  cancelText="取消"
                 >
-                  详情
-                </Button>
-                <Button
-                  onClick={() => this.delSpu(record.id)}
-                  type="danger"
-                  style={{ marginLeft: 20 }}
-                >
-                  删除
-                </Button>
-              </>
+                  <Button
+                    
+                    type="primary"
+                  >
+                    重新退款
+                  </Button>
+                </Popconfirm>
+                
+                : '无'
             )}
           />
         </Table>

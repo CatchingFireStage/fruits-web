@@ -3,15 +3,12 @@
  * @Author: LaughingZhu
  * @Date: 2021-08-28 08:08:15
  * @LastEditros:
- * @LastEditTime: 2021-12-09 17:20:38
+ * @LastEditTime: 2021-12-29 10:46:05
  */
 
 import request from '@/utils/request';
-import { PageParams } from '@/utils/request/params';
-import { message } from 'antd';
-import { SpecificationTableData, SpuListTableData } from './spu.dto';
 
-// SPU分类-添加
+// 支付列表
 export function payList(params: any) {
   return request('/admin/finance/pay', {
     method: 'get',
@@ -19,12 +16,14 @@ export function payList(params: any) {
   });
 }
 
+// 支付详情
 export function detail(id: any) {
   return request(`/admin/finance/pay/${id}`, {
     method: 'get',
   });
 }
 
+// 退款列表
 export function refundList(params: any) {
   return request('/admin/finance/refund', {
     method: 'get',
@@ -32,9 +31,17 @@ export function refundList(params: any) {
   });
 }
 
+// 退款
 export function refundById(data: any) {
   return request('/admin/finance/refund', {
     method: 'POST',
     data,
+  });
+}
+
+// 重新退款
+export function reiterateRefund​(id: any) {
+  return request(`/admin​/finance​/reiterateRefund​/${id}`, {
+    method: 'PUT',
   });
 }
