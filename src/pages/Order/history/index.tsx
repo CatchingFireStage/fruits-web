@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2021-10-19 09:55:41
+ * @LastEditTime: 2022-01-11 17:50:04
  */
 
 import { Button, Divider, PageHeader, Select, Table } from 'antd';
@@ -210,6 +210,8 @@ export default class OrderList extends Component<IProps, IState> {
               ));
             }}
           />
+          <Column align="center" title="桌号" render={(record: any) => record.description.desk} />
+
           <Column
             align="center"
             title="金额"
