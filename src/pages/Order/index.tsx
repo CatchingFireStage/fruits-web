@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-10-09 17:46:07
  * @LastEditros:
- * @LastEditTime: 2021-10-19 16:46:24
+ * @LastEditTime: 2022-01-11 18:03:10
  */
 import { Button } from 'antd';
 import React, { Component } from 'react';
@@ -12,7 +12,7 @@ import styles from './style.module.less';
 
 const wsOrderServe = `ws:${
   process.env.NODE_ENV === 'development'
-    ? '//106.12.76.73:8081'
+    ? '//106.12.76.73:8081' // //106.12.76.73:8081
     : '//api.catchingfire.top'
 }/admin/order/orderWs`;
 interface IProps {}
@@ -47,7 +47,7 @@ class Order extends Component<IProps, IState> {
     ]);
 
     socket.onerror = (err) => {
-      console.log('错误');
+      console.log('错误', err);
     };
     socket.onopen = (event) => {
       console.log('链接成功');
@@ -135,6 +135,8 @@ class Order extends Component<IProps, IState> {
     const renderDoneList = doneList.filter((item: any) => {
       return !finishList.includes(item.id);
     });
+
+    console.log(renderDoneList)
     return (
       <div className={styles.container}>
         <div className={styles.doing}>
@@ -164,6 +166,7 @@ class Order extends Component<IProps, IState> {
                     ),
                   )}
                 </div>
+                <div className={styles.desk}>桌号:{item.description.desk}</div>
                 <div className={styles.tools}>
                   <Button
                     size="small"
@@ -204,6 +207,7 @@ class Order extends Component<IProps, IState> {
                     ),
                   )}
                 </div>
+                <div className={styles.desk}>桌号:{item.description.desk}</div>
                 <div className={styles.tools}>
                   <Button
                     size="small"
