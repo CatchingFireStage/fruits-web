@@ -69,3 +69,21 @@ ol {
     min-height: 100vh;
   }
 }
+
+
+@page {
+  size: portrait;
+  margin: 1cm;
+}
+
+@media all {
+  .pagebreak {
+    display: none;
+  }
+}
+
+@media print {
+  .pagebreak {
+    break-before: always;
+  }
+}

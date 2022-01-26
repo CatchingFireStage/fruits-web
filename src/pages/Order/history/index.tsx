@@ -3,17 +3,17 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2022-01-11 17:50:04
+ * @LastEditTime: 2022-01-26 12:15:37
  */
 
 import { Button, Divider, PageHeader, Select, Table } from 'antd';
 import Column from 'antd/lib/table/Column';
 import { PaginationConfig } from 'antd/lib/pagination';
-
-import React, { Component, Fragment } from 'react';
+import { Print } from '@/components/Print';
+import React, { Component, createRef, Fragment } from 'react';
 import styles from '../style.module.less';
 import { orderHistoty } from '../service';
-
+import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
 interface IProps {}
 interface IState {
   status: number | undefined;
@@ -47,6 +47,7 @@ const statusArr = [
   },
 ];
 
+
 export default class OrderList extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
@@ -58,12 +59,29 @@ export default class OrderList extends Component<IProps, IState> {
         pageSize: 10,
         total: undefined,
       },
+      
     };
   }
 
   componentDidMount = () => {
     this._getList();
   };
+
+  
+
+  renderRefs = (el: any, id: number) => {
+    if(!el) return;
+    this[`print${id}ref`] = createRef();
+    this[`print${id}ref`] = el;
+    return () => this[`print${id}ref`]
+  }
+
+  shouldComponentUpdate = (props: any, state: IState) => {
+    if(this.state.pageInfo.p !== state.pageInfo.p || this.state.pageInfo.total !== state.pageInfo.total) {
+      return true
+    }
+    return false
+  }
 
   _getList = (search?: string) => {
     const { status, pageInfo } = this.state;
@@ -156,6 +174,8 @@ export default class OrderList extends Component<IProps, IState> {
       showTotal: (total: number) => `共 ${total} 条`,
     };
 
+    console.log(111)
+
     return (
       <div className={styles.history}>
         <PageHeader ghost={false} title="历史订单">
@@ -227,6 +247,24 @@ export default class OrderList extends Component<IProps, IState> {
               const result = statusArr.find((item) => item.value === state);
               return result?.label;
             }}
+          />
+          <Column
+            align="center"
+            title="打印"
+            key="print"
+            render={(record: any) => (
+              <>
+                <ReactToPrint content={() => this[`print${record.id}ref`]}>
+                  <PrintContextConsumer>
+                    {({ handlePrint }) => (
+                      <button onClick={handlePrint}>打印小票</button>
+                    )}
+                  </PrintContextConsumer>
+                </ReactToPrint>
+                <div style={{ display: "none" }}><Print desc={record} ref={el => this.renderRefs(el, record.id)} /></div>
+                
+              </>
+            )}
           />
         </Table>
       </div>
