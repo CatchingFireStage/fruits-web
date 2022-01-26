@@ -1,0 +1,43 @@
+.flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.box {
+  font-size: 16px;
+  .flex();
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.order {
+  width: 100%;
+  .flex();
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.item {
+  width: 100%;
+  .flex();
+  justify-content: space-between;
+}
+.spu_box {
+  .flex();
+}
+.mark {
+  margin: 4px 0;
+}
+.count {
+  margin-left: 20px;
+}
+.spu + .spu {
+  &::before {
+    content: '/';
+  }
+}
