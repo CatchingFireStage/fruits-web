@@ -166,7 +166,7 @@ function Detail(props: IProps) {
                           className={styles.list_item}
                           key={'child-' + child.name}
                         >
-                          <div className={styles.list_name}>{child.name}</div>
+                          <div className={styles.list_name}>{child.value}</div>
                           <div className={styles.list_money}>{child.money}</div>
                         </div>
                       ))}

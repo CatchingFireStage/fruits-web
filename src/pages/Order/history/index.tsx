@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2022-01-26 12:15:37
+ * @LastEditTime: 2022-01-27 09:55:01
  */
 
 import { Button, Divider, PageHeader, Select, Table } from 'antd';
@@ -174,7 +174,6 @@ export default class OrderList extends Component<IProps, IState> {
       showTotal: (total: number) => `共 ${total} 条`,
     };
 
-    console.log(111)
 
     return (
       <div className={styles.history}>
@@ -217,7 +216,7 @@ export default class OrderList extends Component<IProps, IState> {
                     {item.spuSpecificationValue.map(
                       (child: any, childIndex: number) => (
                         <span key={`child-${childIndex}`}>
-                          {child.name}
+                          {child.value}
                           {childIndex === item.spuSpecificationValue.length - 1
                             ? ''
                             : '/'}
