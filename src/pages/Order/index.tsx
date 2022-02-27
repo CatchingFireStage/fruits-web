@@ -3,10 +3,12 @@
  * @Author: LaughingZhu
  * @Date: 2021-10-09 17:46:07
  * @LastEditros:
- * @LastEditTime: 2022-01-11 18:03:10
+ * @LastEditTime: 2022-02-27 16:07:55
  */
+import { Print } from '@/components/Print';
 import { Button } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, createRef } from 'react';
+import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
 import { orderDelivery, orderFulfill } from './service';
 import styles from './style.module.less';
 
@@ -127,6 +129,13 @@ class Order extends Component<IProps, IState> {
     });
   };
 
+  renderRefs = (el: any, id: number) => {
+    if(!el) return;
+    this[`print${id}ref`] = createRef();
+    this[`print${id}ref`] = el;
+    return () => this[`print${id}ref`]
+  }
+
   render() {
     const { doingList, doneList, makedList, finishList } = this.state;
     const renderDodingList = doingList.filter((item: any) => {
@@ -176,6 +185,23 @@ class Order extends Component<IProps, IState> {
                     制作完成
                   </Button>
                 </div>
+                <div className={styles.tools}>
+                  <ReactToPrint content={() => this[`print${item.id}ref`]}>
+                    <PrintContextConsumer>
+                      {({ handlePrint }) => (
+                        <Button
+                          size="small"
+                          className={styles.button}
+                          onClick={handlePrint}
+                          type='primary'
+                        >
+                          打印小票
+                        </Button>
+                      )}
+                    </PrintContextConsumer>
+                  </ReactToPrint>
+                  <div style={{ display: "none" }}><Print desc={item} ref={el => this.renderRefs(el, item.id)} /></div>
+                </div>
               </div>
             ))}
           </div>
@@ -217,6 +243,24 @@ class Order extends Component<IProps, IState> {
                     送达完成
                   </Button>
                 </div>
+                <div className={styles.tools}>
+                  <ReactToPrint content={() => this[`print${item.id}ref`]}>
+                    <PrintContextConsumer>
+                      {({ handlePrint }) => (
+                        <Button
+                          size="small"
+                          className={styles.button}
+                          onClick={handlePrint}
+                          type='primary'
+                        >
+                          打印小票
+                        </Button>
+                      )}
+                    </PrintContextConsumer>
+                  </ReactToPrint>
+                  <div style={{ display: "none" }}><Print desc={item} ref={el => this.renderRefs(el, item.id)} /></div>
+                </div>
+                
               </div>
             ))}
           </div>

@@ -3,7 +3,7 @@
  * @Author: LaughingZhu
  * @Date: 2021-09-10 18:23:39
  * @LastEditros:
- * @LastEditTime: 2022-01-27 09:55:01
+ * @LastEditTime: 2022-02-27 15:57:31
  */
 
 import { Button, Divider, PageHeader, Select, Table } from 'antd';
@@ -76,13 +76,6 @@ export default class OrderList extends Component<IProps, IState> {
     return () => this[`print${id}ref`]
   }
 
-  shouldComponentUpdate = (props: any, state: IState) => {
-    if(this.state.pageInfo.p !== state.pageInfo.p || this.state.pageInfo.total !== state.pageInfo.total) {
-      return true
-    }
-    return false
-  }
-
   _getList = (search?: string) => {
     const { status, pageInfo } = this.state;
     const params = {
@@ -92,7 +85,7 @@ export default class OrderList extends Component<IProps, IState> {
 
     orderHistoty(params, (res: any) => {
       this.setState({
-        tableData: res.tableData,
+        tableData: [...res.tableData],
         pageInfo: {
           ...pageInfo,
           total: res.total,
@@ -175,6 +168,7 @@ export default class OrderList extends Component<IProps, IState> {
     };
 
 
+    console.log(tableData, '------------------ß')
     return (
       <div className={styles.history}>
         <PageHeader ghost={false} title="历史订单">
