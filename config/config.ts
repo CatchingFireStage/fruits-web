@@ -85,7 +85,7 @@ export default {
           component: './User/UserLogin',
         },
       ],
-    }, //北分资料
+    },
 
     {
       path: '/',
@@ -178,6 +178,7 @@ export default {
         {
           name: '商家管理',
           icon: 'icon-shangjialiebiaoicon',
+          path: '/merchant',
           routes: [
             {
               name: '商品信息',
@@ -188,6 +189,18 @@ export default {
               name: '生成桌码',
               path: '/merchant/qrcode',
               component: './Merchant/qrcode',
+            },
+          ],
+        },
+        {
+          name: '优惠券管理',
+          icon: 'icon-shangjialiebiaoicon',
+          path: '/coupon',
+          routes: [
+            {
+              name: '优惠券列表',
+              path: '/coupon',
+              component: './Coupon/index',
             },
           ],
         },
