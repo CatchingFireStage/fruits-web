@@ -5,9 +5,14 @@
  * @LastEditros: 
  * @LastEditTime: 2022-04-18 23:36:07
  */
-import { Button, Form, Icon, Modal, PageHeader, Input } from 'antd';
-import React, { useState } from 'react'
+import { Button, Form, Icon, Modal, PageHeader, Input, Table, message, Popconfirm } from 'antd';
+import React, { useCallback, useState } from 'react'
 import styles from './style.module.less'
+import { useEffect } from 'react';
+import { addCoupon, getCouponList } from './services';
+import Column from 'antd/lib/table/Column';
+import { PaginationConfig } from 'antd/lib/pagination';
+import { delCoupon } from './services';
 
 interface IProps {
   form: any;
@@ -17,6 +22,27 @@ function Coupon (props: IProps) {
   const { getFieldDecorator, resetFields } = form;
   const [editStatus, setEditStatus] = useState(false);
   const [editId, setEditId] = useState('')
+  const [loading, setLoading] = useState(false);
+  const [pageInfo, setPageInfo] = useState({
+    p: 1,
+    pageSize: 20,
+    total: 0,
+  })
+  const [list, setList] = useState([])
+
+  const getList = useCallback(async() => {
+    try {
+      const res = await getCouponList({...pageInfo})
+      setList(res.data.list);
+      setPageInfo({...pageInfo, total: res.data.total})
+    } catch (err) {}
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageInfo.p])
+  useEffect(() => {
+    getList()
+  }, [getList])
+  
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -34,27 +60,20 @@ function Coupon (props: IProps) {
     },
   };
 
-  // 分页配置
-  // const paginationConfig: PaginationConfig = {
-  //   total: pageInfo.total,
-  //   current: pageInfo.p,
-  //   pageSize: pageInfo.pageSize,
-  //   showSizeChanger: true,
-  //   showQuickJumper: true,
-  //   onChange: (page: number, pageSize?: number) =>
-  //     this.painationHandle(page, pageSize),
-  //   onShowSizeChange: (current: number, size?: number) =>
-  //     this.painationHandle(current, size),
-  //   showTotal: (total: number) => `共 ${total} 条`,
-  // };
-  const handleSubmit = (e: any) => {
-    e && e.preventDefault();
-    props.form.validateFields((err: any, values: any) => {
-      if (!err) {
+  const painationHandle = (page: number) => {
+    setPageInfo({...pageInfo, p: page})
+  }
 
-        console.log(values, 'formData------')
-      }
-    });
+  // 分页配置
+  const paginationConfig: PaginationConfig = {
+    total: pageInfo.total,
+    current: pageInfo.p,
+    pageSize: pageInfo.pageSize,
+    showSizeChanger: false,
+    showQuickJumper: false,
+    onChange: (page: number) =>
+      painationHandle(page),
+    showTotal: (total: number) => `共 ${total} 条`,
   };
 
   const modalHandle = (type: boolean) => {
@@ -63,6 +82,41 @@ function Coupon (props: IProps) {
       // 关闭modal时，清空表单数据
       resetFields();
       setEditId('')
+    }
+  }
+
+  const handleSubmit = (e: any) => {
+    e && e.preventDefault();
+    props.form.validateFields(async(err: any, values: any) => {
+      if (!err) {
+        setLoading(true)
+        const couponRequest = {...values}
+        try {
+          const res = await addCoupon(couponRequest);
+          if(res.code === 0) {
+            message.success(res.msg, 2, () => {
+              setLoading(false)
+              modalHandle(false);
+              getList();
+            })
+          }
+        } catch (error: any) {
+          message.error(error.msg)
+        }
+      }
+    });
+  };
+
+  const delHandle = async(id: number) => {
+    try {
+      const res = await delCoupon(id);
+      if(res.code === 0) {
+        message.success(res.msg, 2, () => {
+          getList();
+        });
+      }
+    } catch (err: any) {
+      message.error(err.msg, 2);
     }
   }
 
@@ -81,6 +135,35 @@ function Coupon (props: IProps) {
           </Button>,
         ]}
       />
+      <Table
+        className={styles.main}
+        rowKey={(record: any) => record.id}
+        pagination={paginationConfig}
+        dataSource={list}>
+        <Column align='center' title="优惠内容" dataIndex="payload" key="payload" render={(payload: any) => (
+          <span>{`满${payload.discounts}元减${payload.waterLine}元`}</span>
+        )} />
+
+        <Column
+          title="操作"
+          key="action"
+          align='center'
+          render={(record: any) => (
+            <>
+              <Button type='primary' style={{marginLeft: 20}} >编辑</Button>
+              <Popconfirm
+                title="是否要删除该优惠内容?"
+                onConfirm={() => delHandle(record.id)}
+                okText="删除"
+                cancelText="取消"
+              >
+                <Button type='danger' style={{marginLeft: 20}} >删除</Button>
+              </Popconfirm>
+              
+            </>
+          )}
+        />
+      </Table>
 
       {/* 编辑窗口 */}
       <Modal
@@ -133,7 +216,7 @@ function Coupon (props: IProps) {
               
             </Form.Item>
             <Form.Item {...formItemLayoutWithOutLabel} >
-              <Button type="primary" htmlType="submit" style={{ width: '90%' }}>
+              <Button disabled={loading} type="primary" htmlType="submit" style={{ width: '90%' }}>
                 提交
               </Button>
             </Form.Item>
