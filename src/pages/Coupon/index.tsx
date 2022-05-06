@@ -21,7 +21,7 @@ function Coupon (props: IProps) {
   const { form } = props;
   const { getFieldDecorator, resetFields } = form;
   const [editStatus, setEditStatus] = useState(false);
-  const [editId, setEditId] = useState('')
+  // const [editId, setEditId] = useState('')
   const [loading, setLoading] = useState(false);
   const [pageInfo, setPageInfo] = useState({
     p: 1,
@@ -150,7 +150,7 @@ function Coupon (props: IProps) {
           align='center'
           render={(record: any) => (
             <>
-              <Button type='primary' style={{marginLeft: 20}} >编辑</Button>
+              {/* <Button type='primary' style={{marginLeft: 20}} >编辑</Button> */}
               <Popconfirm
                 title="是否要删除该优惠内容?"
                 onConfirm={() => delHandle(record.id)}
@@ -167,7 +167,7 @@ function Coupon (props: IProps) {
 
       {/* 编辑窗口 */}
       <Modal
-        title={editId ? '优惠券编辑' : '新增优惠券'}
+        title={'新增优惠券'}
         visible={editStatus}
         onOk={(e: any) => handleSubmit(e)}
         onCancel={() => modalHandle(false)}
