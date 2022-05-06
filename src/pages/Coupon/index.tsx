@@ -81,7 +81,6 @@ function Coupon (props: IProps) {
     if(!type) {
       // 关闭modal时，清空表单数据
       resetFields();
-      setEditId('')
     }
   }
 
