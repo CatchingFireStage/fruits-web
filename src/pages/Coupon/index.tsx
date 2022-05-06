@@ -124,7 +124,7 @@ function Coupon (props: IProps) {
     <div className={styles.root}>
       <PageHeader
         ghost={false}
-        title="支付列表"
+        title="优惠券列表"
         extra={[
           <Button
             key="1"
