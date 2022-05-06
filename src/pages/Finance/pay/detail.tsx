@@ -5,7 +5,7 @@
  * @LastEditros:
  * @LastEditTime: 2021-12-29 10:21:45
  */
-import React from 'react';
+import React, { useCallback } from 'react';
 import styles from './detail.less';
 import { useEffect, useState } from 'react';
 import { detail, refundById } from '../services';
@@ -47,14 +47,14 @@ function Detail(props: IProps) {
     if (id) {
       _getDetail();
     }
-  }, [id]);
+  }, [_getDetail, id]);
 
-  const _getDetail = async () => {
+  const _getDetail = useCallback(async () => {
     const res = await detail(id);
     if (res.code === 0) {
       setInfo(res.data);
     }
-  };
+  }, [id]);
 
   const handleModal = (visible: boolean) => {
     if (visible) {
@@ -145,6 +145,10 @@ function Detail(props: IProps) {
             <div className={styles.top_value}>{info.refundAmount}元</div>
           </div>
           <div className={styles.top_item}>
+            <div className={styles.top_label}>优惠详情：</div>
+            <div className={styles.top_value}>{info.merchantTransactionObject?.description.couponInfo.length ? info.merchantTransactionObject?.description.couponInfo.map((item: string, index: number) => <div key={index}>{item}</div>) : '无'}</div>
+          </div>
+          <div className={styles.top_item}>
             <div className={styles.top_label}>商品详情：</div>
             <div className={styles.top_value}>
               {info.merchantTransactionObject &&
@@ -164,7 +168,7 @@ function Detail(props: IProps) {
                       {item.spuSpecificationValue.map((child: any) => (
                         <div
                           className={styles.list_item}
-                          key={'child-' + child.name}
+                          key={`child-${  child.name}`}
                         >
                           <div className={styles.list_name}>{child.value}</div>
                           <div className={styles.list_money}>{child.money}</div>

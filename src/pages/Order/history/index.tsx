@@ -14,6 +14,7 @@ import React, { Component, createRef, Fragment } from 'react';
 import styles from '../style.module.less';
 import { orderHistoty } from '../service';
 import ReactToPrint, { PrintContextConsumer } from 'react-to-print';
+
 interface IProps {}
 interface IState {
   status: number | undefined;
@@ -66,9 +67,7 @@ export default class OrderList extends Component<IProps, IState> {
   componentDidMount = () => {
     this._getList();
   };
-
   
-
   renderRefs = (el: any, id: number) => {
     if(!el) return;
     this[`print${id}ref`] = createRef();
@@ -167,8 +166,6 @@ export default class OrderList extends Component<IProps, IState> {
       showTotal: (total: number) => `共 ${total} 条`,
     };
 
-
-    console.log(tableData, '------------------ß')
     return (
       <div className={styles.history}>
         <PageHeader ghost={false} title="历史订单">
@@ -240,6 +237,12 @@ export default class OrderList extends Component<IProps, IState> {
               const result = statusArr.find((item) => item.value === state);
               return result?.label;
             }}
+          />
+          <Column
+            align="center"
+            title="优惠详情"
+            key="coupon"
+            render={(record: any) => record.description.couponInfo.map((item: string, index: number) => <p key={index}>{item}</p>)}
           />
           <Column
             align="center"
