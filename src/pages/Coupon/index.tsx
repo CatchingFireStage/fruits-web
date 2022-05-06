@@ -181,7 +181,7 @@ function Coupon (props: IProps) {
               label={'满'}
               required
             >
-              {getFieldDecorator(`discounts`, {
+              {getFieldDecorator(`waterLine`, {
                 validateTrigger: ['onChange', 'onBlur'],
                 rules: [
                   {
@@ -200,7 +200,7 @@ function Coupon (props: IProps) {
               label={'减'}
               required
             >
-              {getFieldDecorator(`waterLine`, {
+              {getFieldDecorator(`discounts`, {
                 validateTrigger: ['onChange', 'onBlur'],
                 rules: [
                   {
