@@ -140,7 +140,7 @@ function Coupon (props: IProps) {
         pagination={paginationConfig}
         dataSource={list}>
         <Column align='center' title="优惠内容" dataIndex="payload" key="payload" render={(payload: any) => (
-          <span>{`满${payload.discounts}元减${payload.waterLine}元`}</span>
+          <span>{`满${payload.waterLine}元减${payload.discounts}元`}</span>
         )} />
 
         <Column
