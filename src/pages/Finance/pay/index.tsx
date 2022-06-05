@@ -6,13 +6,12 @@
  * @LastEditTime: 2021-12-29 15:27:15
  */
 
-import { Button, Input, Modal, PageHeader, Table, Tag } from 'antd';
+import { Button, Input, message, PageHeader, Table, Tooltip } from 'antd';
 import Column from 'antd/lib/table/Column';
 import { PaginationConfig } from 'antd/lib/pagination';
-
 import React, { Component } from 'react';
 import styles from '../../spu/category/style.less';
-import { detail, payList } from '../services';
+import { checkOrderResult, payList } from '../services';
 import { stateArr } from '../config';
 import router from 'umi/router';
 
@@ -42,10 +41,10 @@ export default class Pay extends Component<IProps, IState> {
   }
 
   componentDidMount = () => {
-    this._getList();
+    this.initGetList();
   };
 
-  _getList = async () => {
+  initGetList = async () => {
     const { keyword, pageInfo } = this.state;
     const params = {
       keyword,
@@ -77,7 +76,7 @@ export default class Pay extends Component<IProps, IState> {
         },
       },
       () => {
-        this._getList();
+        this.initGetList();
       },
     );
   };
@@ -96,15 +95,34 @@ export default class Pay extends Component<IProps, IState> {
   };
 
   onSearch = () => {
-    this.setState({
-      pageInfo: {
-        ...this.state.pageInfo,
-        p: 1
+    this.setState(
+      {
+        pageInfo: {
+          ...this.state.pageInfo,
+          p: 1,
+        },
+      },
+      () => {
+        this.initGetList();
+      },
+    );
+  };
+
+  /**
+   * @desc 手动检查是否支付成功
+   * @param id {订单id}
+   *
+   */
+  handleCheck = async (id: string) => {
+    try {
+      const res = await checkOrderResult(id);
+      if (res.code === 0) {
+        message.warning(res.data.tradeStateDesc);
       }
-    }, () => {
-      this._getList()
-    })
-  }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   render() {
     const { pageInfo, tableData } = this.state;
@@ -165,8 +183,18 @@ export default class Pay extends Component<IProps, IState> {
         >
           {/* <Column align='center' title="序号" dataIndex="id" key="id" /> */}
           <Column align="center" title="ID" dataIndex="id" key="id" />
-          <Column align="center" title="微信支付单号" dataIndex="transactionId" key="transactionId" />
-          <Column align="center" title="商户系统订单号" dataIndex="outTradeNo" key="outTradeNo" />
+          <Column
+            align="center"
+            title="微信支付单号"
+            dataIndex="transactionId"
+            key="transactionId"
+          />
+          <Column
+            align="center"
+            title="商户系统订单号"
+            dataIndex="outTradeNo"
+            key="outTradeNo"
+          />
           <Column align="center" title="价格" dataIndex="amount" key="amount" />
 
           <Column
@@ -198,6 +226,16 @@ export default class Pay extends Component<IProps, IState> {
                 >
                   详情
                 </Button>
+                <Tooltip title="手动检查是否支付成功">
+                  <Button
+                    onClick={() => this.handleCheck(record.id)}
+                    disabled={record.state !== stateArr[0].value}
+                    type="primary"
+                    style={{ marginLeft: 20 }}
+                  >
+                    查验
+                  </Button>
+                </Tooltip>
               </>
             )}
           />

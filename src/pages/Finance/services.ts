@@ -1,12 +1,5 @@
-/*
- * @Description:
- * @Author: LaughingZhu
- * @Date: 2021-08-28 08:08:15
- * @LastEditros:
- * @LastEditTime: 2021-12-29 10:46:05
- */
-
 import request from '@/utils/request';
+import { DetailInfo } from './spu.dto';
 
 // 支付列表
 export function payList(params: any) {
@@ -17,7 +10,9 @@ export function payList(params: any) {
 }
 
 // 支付详情
-export function detail(id: any) {
+export function detail(
+  id: string,
+): Promise<{ data: DetailInfo; code: number }> {
   return request(`/admin/finance/pay/${id}`, {
     method: 'get',
   });
@@ -40,8 +35,19 @@ export function refundById(data: any) {
 }
 
 // 重新退款
-export function reiterateRefund​(id: any) {
+export function reiterateRefund(id: any) {
   return request(`/admin​/finance​/reiterateRefund​/${id}`, {
     method: 'PUT',
+  });
+}
+
+/**
+ * @desc 手动检查是否支付成功
+ * @param id {订单id}
+ * @returns
+ */
+export function checkOrderResult(id: string) {
+  return request(`/admin/finance/pay/${id}/checkIsPay`, {
+    method: 'GET',
   });
 }
