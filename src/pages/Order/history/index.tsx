@@ -6,7 +6,7 @@
  * @LastEditTime: 2022-04-18 23:12:50
  */
 
-import { Button, Divider, PageHeader, Select, Table } from 'antd';
+import { Divider, PageHeader, Select, Table } from 'antd';
 import Column from 'antd/lib/table/Column';
 import { PaginationConfig } from 'antd/lib/pagination';
 import { Print } from '@/components/Print';
@@ -48,7 +48,6 @@ const statusArr = [
   },
 ];
 
-
 export default class OrderList extends Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
@@ -60,20 +59,19 @@ export default class OrderList extends Component<IProps, IState> {
         pageSize: 10,
         total: undefined,
       },
-      
     };
   }
 
   componentDidMount = () => {
     this._getList();
   };
-  
+
   renderRefs = (el: any, id: number) => {
-    if(!el) return;
+    if (!el) return;
     this[`print${id}ref`] = createRef();
     this[`print${id}ref`] = el;
-    return () => this[`print${id}ref`]
-  }
+    return () => this[`print${id}ref`];
+  };
 
   _getList = (search?: string) => {
     const { status, pageInfo } = this.state;
@@ -220,7 +218,11 @@ export default class OrderList extends Component<IProps, IState> {
               ));
             }}
           />
-          <Column align="center" title="桌号" render={(record: any) => record.description.desk} />
+          <Column
+            align="center"
+            title="桌号"
+            render={(record: any) => record.description.desk}
+          />
 
           <Column
             align="center"
@@ -242,7 +244,11 @@ export default class OrderList extends Component<IProps, IState> {
             align="center"
             title="优惠详情"
             key="coupon"
-            render={(record: any) => record.description.couponInfo.map((item: string, index: number) => <p key={index}>{item}</p>)}
+            render={(record: any) =>
+              record.description.couponInfo.map(
+                (item: string, index: number) => <p key={index}>{item}</p>,
+              )
+            }
           />
           <Column
             align="center"
@@ -257,8 +263,12 @@ export default class OrderList extends Component<IProps, IState> {
                     )}
                   </PrintContextConsumer>
                 </ReactToPrint>
-                <div style={{ display: "none" }}><Print desc={record} ref={el => this.renderRefs(el, record.id)} /></div>
-                
+                <div style={{ display: 'none' }}>
+                  <Print
+                    desc={record}
+                    ref={(el) => this.renderRefs(el, record.id)}
+                  />
+                </div>
               </>
             )}
           />
