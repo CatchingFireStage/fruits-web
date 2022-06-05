@@ -20,41 +20,43 @@ import {
 } from 'antd';
 import { stateArr } from '../config';
 import Column from 'antd/lib/table/Column';
+import { DetailInfo } from '../spu.dto';
 
 interface IProps {
   location: any;
 }
 function Detail(props: IProps) {
   const { id } = props.location.query;
-  const [info, setInfo] = useState({
+  const [info, setInfo] = useState<DetailInfo>({
     merchantTransactionObject: undefined,
-    merchantTransactionType: undefined,
-    merchantTransactionId: undefined,
+    merchantTransactionType: '',
+    merchantTransactionId: '',
     outTradeNo: '',
-    transactionId: 0,
+    transactionId: '',
     createTime: '',
     amount: '',
     refundAmount: '',
     state: '',
-    refund: []
+    refund: [],
   });
   const [visible, setVisible] = useState(false);
   const [refund, setRefund] = useState({
     amount: 0,
     reason: '',
   });
-  useEffect(() => {
-    if (id) {
-      _getDetail();
-    }
-  }, [_getDetail, id]);
 
-  const _getDetail = useCallback(async () => {
+  const initgGetDetail = useCallback(async () => {
     const res = await detail(id);
     if (res.code === 0) {
       setInfo(res.data);
     }
   }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      initgGetDetail();
+    }
+  }, [initgGetDetail, id]);
 
   const handleModal = (visible: boolean) => {
     if (visible) {
@@ -73,11 +75,12 @@ function Detail(props: IProps) {
     if (res.code === 0) {
       message.success(res.msg, 2, () => {
         handleModal(false);
-        _getDetail();
+        initgGetDetail();
       });
     } else {
       message.error(res.msg, 2);
     }
+    return false;
   };
   return (
     <div className={styles.detail}>
@@ -98,14 +101,14 @@ function Detail(props: IProps) {
             <div className={styles.top_label}>退款人Id：</div>
             <div className={styles.top_value}>
               {info.merchantTransactionObject &&
-                info.merchantTransactionObject.user.id}
+                info.merchantTransactionObject?.user.id}
             </div>
           </div>
           <div className={styles.top_item}>
             <div className={styles.top_label}>退款人手机号：</div>
             <div className={styles.top_value}>
               {info.merchantTransactionObject &&
-                info.merchantTransactionObject.user.phone}
+                info.merchantTransactionObject?.user.phone}
             </div>
           </div>
           <div className={styles.top_item}>
@@ -146,7 +149,15 @@ function Detail(props: IProps) {
           </div>
           <div className={styles.top_item}>
             <div className={styles.top_label}>优惠详情：</div>
-            <div className={styles.top_value}>{info.merchantTransactionObject?.description.couponInfo.length ? info.merchantTransactionObject?.description.couponInfo.map((item: string, index: number) => <div key={index}>{item}</div>) : '无'}</div>
+            <div className={styles.top_value}>
+              {info.merchantTransactionObject?.description.couponInfo.length
+                ? info.merchantTransactionObject?.description.couponInfo.map(
+                    (item: string, index: number) => (
+                      <div key={index}>{item}</div>
+                    ),
+                  )
+                : '无'}
+            </div>
           </div>
           <div className={styles.top_item}>
             <div className={styles.top_label}>商品详情：</div>
@@ -168,7 +179,7 @@ function Detail(props: IProps) {
                       {item.spuSpecificationValue.map((child: any) => (
                         <div
                           className={styles.list_item}
-                          key={`child-${  child.name}`}
+                          key={`child-${child.name}`}
                         >
                           <div className={styles.list_name}>{child.value}</div>
                           <div className={styles.list_money}>{child.money}</div>

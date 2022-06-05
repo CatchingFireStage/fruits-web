@@ -2,12 +2,21 @@
  * @Description: 优惠券管理
  * @Author: LaughingZhu
  * @Date: 2022-04-18 23:23:09
- * @LastEditros: 
+ * @LastEditros:
  * @LastEditTime: 2022-04-18 23:36:07
  */
-import { Button, Form, Icon, Modal, PageHeader, Input, Table, message, Popconfirm } from 'antd';
-import React, { useCallback, useState } from 'react'
-import styles from './style.module.less'
+import {
+  Button,
+  Form,
+  Modal,
+  PageHeader,
+  Input,
+  Table,
+  message,
+  Popconfirm,
+} from 'antd';
+import React, { useCallback, useState } from 'react';
+import styles from './style.module.less';
 import { useEffect } from 'react';
 import { addCoupon, getCouponList } from './services';
 import Column from 'antd/lib/table/Column';
@@ -17,7 +26,7 @@ import { delCoupon } from './services';
 interface IProps {
   form: any;
 }
-function Coupon (props: IProps) {
+function Coupon(props: IProps) {
   const { form } = props;
   const { getFieldDecorator, resetFields } = form;
   const [editStatus, setEditStatus] = useState(false);
@@ -27,22 +36,22 @@ function Coupon (props: IProps) {
     p: 1,
     pageSize: 20,
     total: 0,
-  })
-  const [list, setList] = useState([])
+  });
+  const [list, setList] = useState([]);
 
-  const getList = useCallback(async() => {
+  const getList = useCallback(async () => {
     try {
-      const res = await getCouponList({...pageInfo})
+      const res = await getCouponList({ ...pageInfo });
       setList(res.data.list);
-      setPageInfo({...pageInfo, total: res.data.total})
+      setPageInfo({ ...pageInfo, total: res.data.total });
     } catch (err) {}
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageInfo.p])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageInfo.p]);
   useEffect(() => {
-    getList()
-  }, [getList])
-  
+    getList();
+  }, [getList]);
+
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -61,8 +70,8 @@ function Coupon (props: IProps) {
   };
 
   const painationHandle = (page: number) => {
-    setPageInfo({...pageInfo, p: page})
-  }
+    setPageInfo({ ...pageInfo, p: page });
+  };
 
   // 分页配置
   const paginationConfig: PaginationConfig = {
@@ -71,45 +80,44 @@ function Coupon (props: IProps) {
     pageSize: pageInfo.pageSize,
     showSizeChanger: false,
     showQuickJumper: false,
-    onChange: (page: number) =>
-      painationHandle(page),
+    onChange: (page: number) => painationHandle(page),
     showTotal: (total: number) => `共 ${total} 条`,
   };
 
   const modalHandle = (type: boolean) => {
-    setEditStatus(type)
-    if(!type) {
+    setEditStatus(type);
+    if (!type) {
       // 关闭modal时，清空表单数据
       resetFields();
     }
-  }
+  };
 
   const handleSubmit = (e: any) => {
     e && e.preventDefault();
-    props.form.validateFields(async(err: any, values: any) => {
+    props.form.validateFields(async (err: any, values: any) => {
       if (!err) {
-        setLoading(true)
-        const couponRequest = {...values}
+        setLoading(true);
+        const couponRequest = { ...values };
         try {
           const res = await addCoupon(couponRequest);
-          if(res.code === 0) {
+          if (res.code === 0) {
             message.success(res.msg, 2, () => {
-              setLoading(false)
+              setLoading(false);
               modalHandle(false);
               getList();
-            })
+            });
           }
         } catch (error: any) {
-          message.error(error.msg)
+          message.error(error.msg);
         }
       }
     });
   };
 
-  const delHandle = async(id: number) => {
+  const delHandle = async (id: string) => {
     try {
       const res = await delCoupon(id);
-      if(res.code === 0) {
+      if (res.code === 0) {
         message.success(res.msg, 2, () => {
           getList();
         });
@@ -117,7 +125,7 @@ function Coupon (props: IProps) {
     } catch (err: any) {
       message.error(err.msg, 2);
     }
-  }
+  };
 
   return (
     <div className={styles.root}>
@@ -125,11 +133,7 @@ function Coupon (props: IProps) {
         ghost={false}
         title="优惠券列表"
         extra={[
-          <Button
-            key="1"
-            type="primary"
-            onClick={() => modalHandle(true)}
-          >
+          <Button key="1" type="primary" onClick={() => modalHandle(true)}>
             新增
           </Button>,
         ]}
@@ -138,15 +142,22 @@ function Coupon (props: IProps) {
         className={styles.main}
         rowKey={(record: any) => record.id}
         pagination={paginationConfig}
-        dataSource={list}>
-        <Column align='center' title="优惠内容" dataIndex="payload" key="payload" render={(payload: any) => (
-          <span>{`满${payload.waterLine}元减${payload.discounts}元`}</span>
-        )} />
+        dataSource={list}
+      >
+        <Column
+          align="center"
+          title="优惠内容"
+          dataIndex="payload"
+          key="payload"
+          render={(payload: any) => (
+            <span>{`满${payload.waterLine}元减${payload.discounts}元`}</span>
+          )}
+        />
 
         <Column
           title="操作"
           key="action"
-          align='center'
+          align="center"
           render={(record: any) => (
             <>
               {/* <Button type='primary' style={{marginLeft: 20}} >编辑</Button> */}
@@ -156,9 +167,10 @@ function Coupon (props: IProps) {
                 okText="删除"
                 cancelText="取消"
               >
-                <Button type='danger' style={{marginLeft: 20}} >删除</Button>
+                <Button type="danger" style={{ marginLeft: 20 }}>
+                  删除
+                </Button>
               </Popconfirm>
-              
             </>
           )}
         />
@@ -176,55 +188,57 @@ function Coupon (props: IProps) {
       >
         <div className={styles.edit}>
           <Form onSubmit={handleSubmit}>
-            <Form.Item
-              {...formItemLayout}
-              label={'满'}
-              required
-            >
+            <Form.Item {...formItemLayout} label={'满'} required>
               {getFieldDecorator(`waterLine`, {
                 validateTrigger: ['onChange', 'onBlur'],
                 rules: [
                   {
                     required: true,
                     whitespace: true,
-                    message: "满多少元",
+                    message: '满多少元',
                   },
                 ],
               })(
-                <Input type='number' placeholder="请输入满多少元" style={{ width: '90%', marginRight: 8 }} />
+                <Input
+                  type="number"
+                  placeholder="请输入满多少元"
+                  style={{ width: '90%', marginRight: 8 }}
+                />,
               )}
-              
             </Form.Item>
-            <Form.Item
-              {...formItemLayout}
-              label={'减'}
-              required
-            >
+            <Form.Item {...formItemLayout} label={'减'} required>
               {getFieldDecorator(`discounts`, {
                 validateTrigger: ['onChange', 'onBlur'],
                 rules: [
                   {
                     required: true,
                     whitespace: true,
-                    message: "减多少元",
+                    message: '减多少元',
                   },
                 ],
               })(
-                <Input type='number' placeholder="请输入减多少元" style={{ width: '90%', marginRight: 8 }} />
+                <Input
+                  type="number"
+                  placeholder="请输入减多少元"
+                  style={{ width: '90%', marginRight: 8 }}
+                />,
               )}
-              
             </Form.Item>
-            <Form.Item {...formItemLayoutWithOutLabel} >
-              <Button disabled={loading} type="primary" htmlType="submit" style={{ width: '90%' }}>
+            <Form.Item {...formItemLayoutWithOutLabel}>
+              <Button
+                disabled={loading}
+                type="primary"
+                htmlType="submit"
+                style={{ width: '90%' }}
+              >
                 提交
               </Button>
             </Form.Item>
           </Form>
         </div>
       </Modal>
-
     </div>
-  )
+  );
 }
 
-export default Form.create({ name: 'coupon_edit' })(Coupon);;
+export default Form.create({ name: 'coupon_edit' })(Coupon);

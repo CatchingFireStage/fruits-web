@@ -50,3 +50,53 @@ export interface SpuListTableData {
     | null;
   total: number;
 }
+
+/**
+ * @desc 订单类型
+ */
+export interface DetailInfo {
+  merchantTransactionObject:
+    | {
+        description: {
+          couponInfo: string[];
+
+          orderDescription: {
+            spu: {
+              money: string;
+              name: string;
+            };
+            spuSpecificationValue: {
+              money: string;
+              name: string;
+              value: string;
+            }[];
+          }[];
+
+          payAmount: string;
+        };
+        id: number;
+        state: string;
+        user: {
+          id: number;
+          phone: string;
+        };
+      }
+    | undefined;
+  merchantTransactionType: string;
+  merchantTransactionId: string;
+  outTradeNo: string;
+  transactionId: string;
+  createTime: string;
+  amount: string;
+  refundAmount: string;
+  state: string;
+  refund: {
+    amount: string;
+    createTime: string;
+    id: number;
+    outRefundNo: string;
+    reason: string;
+    refundId: string;
+    state: string;
+  }[];
+}
