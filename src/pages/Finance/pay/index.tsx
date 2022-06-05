@@ -118,6 +118,7 @@ export default class Pay extends Component<IProps, IState> {
       const res = await checkOrderResult(id);
       if (res.code === 0) {
         message.warning(res.data.tradeStateDesc);
+        this.initGetList();
       }
     } catch (error) {
       console.error(error);
